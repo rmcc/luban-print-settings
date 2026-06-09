@@ -1415,6 +1415,34 @@
                                     "min": 0,
                                     "max": 20000
                                 },
+                                "wall_0_material_flow_roofing":
+                                {
+                                    "label": "Top Surface Outer Wall Flow",
+                                    "description": "Flow compensation on the top surface outermost wall line.",
+                                    "unit": "%",
+                                    "type": "float",
+                                    "default_value": 100,
+                                    "value": "wall_0_material_flow",
+                                    "minimum_value": "0.0001",
+                                    "minimum_value_warning": "50",
+                                    "maximum_value_warning": "150",
+                                    "limit_to_extruder": "wall_0_extruder_nr",
+                                    "settable_per_mesh": true
+                                },
+                                "wall_x_material_flow_roofing":
+                                {
+                                    "label": "Top Surface Inner Wall(s) Flow",
+                                    "description": "Flow compensation on top surface wall lines for all wall lines except the outermost one.",
+                                    "unit": "%",
+                                    "type": "float",
+                                    "default_value": 100,
+                                    "value": "wall_x_material_flow",
+                                    "minimum_value": "0.0001",
+                                    "minimum_value_warning": "50",
+                                    "maximum_value_warning": "150",
+                                    "limit_to_extruder": "wall_x_extruder_nr",
+                                    "settable_per_mesh": true
+                                },
                                 "skin_material_flow": {
                                     "label": "Top/Bottom Flow",
                                     "description": "Flow compensation on top/bottom lines.",
@@ -2609,6 +2637,34 @@
                                     "min": 1,
                                     "max": 20000
                                 },
+                                "speed_wall_0_roofing":
+                                {
+                                    "label": "Top Surface Outer Wall Speed",
+                                    "description": "The speed at which the top surface outermost wall is printed.",
+                                    "unit": "mm/s",
+                                    "type": "float",
+                                    "minimum_value": "0.1",
+                                    "maximum_value": "math.sqrt(machine_max_feedrate_x ** 2 + machine_max_feedrate_y ** 2)",
+                                    "maximum_value_warning": "150",
+                                    "default_value": 30,
+                                    "value": "speed_wall_0",
+                                    "limit_to_extruder": "wall_0_extruder_nr",
+                                    "settable_per_mesh": true
+                                },
+                                "speed_wall_x_roofing":
+                                {
+                                    "label": "Top Surface Inner Wall Speed",
+                                    "description": "The speed at which the top surface inner walls are printed.",
+                                    "unit": "mm/s",
+                                    "type": "float",
+                                    "minimum_value": "0.1",
+                                    "maximum_value": "math.sqrt(machine_max_feedrate_x ** 2 + machine_max_feedrate_y ** 2)",
+                                    "maximum_value_warning": "150",
+                                    "default_value": 60,
+                                    "value": "speed_wall_x",
+                                    "limit_to_extruder": "wall_x_extruder_nr",
+                                    "settable_per_mesh": true
+                                },
                                 "wall_overhang_speed_factor": {
                                     "label": "Overhanging Wall Speed",
                                     "description": "Overhanging walls will be printed at this percentage of their normal print speed.",
@@ -2871,6 +2927,36 @@
                                     "settable_per_mesh": true,
                                     "min": 1,
                                     "max": 20000
+                                },
+                                "acceleration_wall_0_roofing":
+                                {
+                                    "label": "Top Surface Outer Wall Acceleration",
+                                    "description": "The acceleration with which the top surface outermost walls are printed.",
+                                    "unit": "mm/s\u00b2",
+                                    "type": "float",
+                                    "minimum_value": "0.1",
+                                    "minimum_value_warning": "100",
+                                    "maximum_value_warning": "10000",
+                                    "default_value": 3000,
+                                    "value": "acceleration_wall_0",
+                                    "enabled": "resolveOrValue('acceleration_enabled')",
+                                    "limit_to_extruder": "wall_0_extruder_nr",
+                                    "settable_per_mesh": true
+                                },
+                                "acceleration_wall_x_roofing":
+                                {
+                                    "label": "Top Surface Inner Wall Acceleration",
+                                    "description": "The acceleration with which the top surface inner walls are printed.",
+                                    "unit": "mm/s\u00b2",
+                                    "type": "float",
+                                    "minimum_value": "0.1",
+                                    "minimum_value_warning": "100",
+                                    "maximum_value_warning": "10000",
+                                    "default_value": 3000,
+                                    "value": "acceleration_wall_x",
+                                    "enabled": "resolveOrValue('acceleration_enabled')",
+                                    "limit_to_extruder": "wall_x_extruder_nr",
+                                    "settable_per_mesh": true
                                 },
                                 "acceleration_topbottom": {
                                     "label": "Top/Bottom Acceleration",
@@ -3253,6 +3339,31 @@
                             "limit_to_extruder": "top_bottom_extruder_nr",
                             "settable_per_mesh": false
                         },
+                        "small_skin_width":
+                        {
+                            "label": "Small Top/Bottom Width",
+                            "description": "Small top/bottom regions are filled with walls instead of the default top/bottom pattern. This helps to avoids jerky motions. Off for the topmost (air-exposed) layer by default (see 'Small Top/Bottom On Surface').",
+                            "value": "skin_line_width * 2",
+                            "default_value": 1,
+                            "minimum_value": "0",
+                            "maximum_value_warning": "skin_line_width * 10",
+                            "type": "float",
+                            "enabled": "(top_layers > 0 or bottom_layers > 0) and top_bottom_pattern != 'concentric'",
+                            "limit_to_extruder": "top_bottom_extruder_nr",
+                            "settable_per_mesh": true,
+                            "unit": "mm"
+                        },
+                        "small_skin_on_surface":
+                        {
+                            "label": "Small Top/Bottom On Surface",
+                            "description": "Enable small (up to 'Small Top/Bottom Width') regions on the topmost skinned layer (exposed to air) to be filled with walls instead of the default pattern.",
+                            "value": "False",
+                            "default_value": false,
+                            "type": "bool",
+                            "enabled": "small_skin_width > 0 and top_layers > 0",
+                                "limit_to_extruder": "top_bottom_extruder_nr",
+                            "settable_per_mesh": true
+                        },
                         "infill_sparse_density": {
                             "label": "Infill Density",
                             "description": "Adjusts the density of infill of the print.",
@@ -3548,6 +3659,132 @@
                                     "settable_per_extruder": false,
                                     "min": 0,
                                     "max": 20000
+                                },
+                                "support_tree_angle_slow":
+                                {
+                                    "label": "Preferred Branch Angle",
+                                    "description": "The preferred angle of the branches, when they do not have to avoid the model. Use a lower angle to make them more vertical and more stable. Use a higher angle for branches to merge faster.",
+                                    "unit": "\u00b0",
+                                    "type": "float",
+                                    "minimum_value": "0",
+                                    "minimum_value_warning": "10",
+                                    "maximum_value": "support_tree_angle",
+                                    "maximum_value_warning": "support_tree_angle-1",
+                                    "default_value": 50,
+                                    "value": "support_tree_angle * 2 / 3",
+                                    "limit_to_extruder": "support_infill_extruder_nr",
+                                    "enabled": "support_enable and support_structure=='tree'",
+                                    "settable_per_mesh": true,
+                                    "settable_per_extruder": true
+                                },
+                                "support_tree_tip_diameter":
+                                {
+                                    "label": "Tip Diameter",
+                                    "description": "The diameter of the top of the tip of the branches of tree support.",
+                                    "unit": "mm",
+                                    "type": "float",
+                                    "minimum_value": "min_wall_line_width",
+                                    "maximum_value": "support_tree_branch_diameter",
+                                    "default_value": 0.4,
+                                    "value": "support_line_width * 2",
+                                    "limit_to_extruder": "support_infill_extruder_nr",
+                                    "enabled": "support_enable and support_structure=='tree'",
+                                    "settable_per_mesh": true,
+                                    "settable_per_extruder": true
+                                },
+                                "support_tree_max_diameter_increase_by_merges_when_support_to_model":
+                                {
+                                    "label": "Diameter Increase To Model",
+                                    "description": "The most the diameter of a branch that has to connect to the model may increase by merging with branches that could reach the buildplate. Increasing this reduces print time, but increases the area of support that rests on model",
+                                    "unit": "mm",
+                                    "type": "float",
+                                    "minimum_value": "0",
+                                    "default_value": 1,
+                                    "limit_to_extruder": "support_infill_extruder_nr",
+                                    "enabled": "support_enable and support_structure=='tree' and resolveOrValue('support_type') == 'everywhere' ",
+                                    "settable_per_mesh": true,
+                                    "settable_per_extruder": true
+                                },
+                                "support_tree_min_height_to_model":
+                                {
+                                    "label": "Minimum Height To Model",
+                                    "description": "How tall a branch has to be if it is placed on the model. Prevents small blobs of support. This setting is ignored when a branch is supporting a support roof.",
+                                    "unit": "mm",
+                                    "type": "float",
+                                    "minimum_value": "0",
+                                    "maximum_value_warning": "5",
+                                    "default_value": 3,
+                                    "limit_to_extruder": "support_infill_extruder_nr",
+                                    "enabled": "support_enable and support_structure=='tree' and resolveOrValue('support_type') == 'everywhere' ",
+                                    "settable_per_mesh": true,
+                                    "settable_per_extruder": true
+                                },
+                                "support_tree_rest_preference":
+                                {
+                                    "label": "Rest Preference",
+                                    "description": "The preferred placement of the support structures. If structures can't be placed at the preferred location, they will be place elsewhere, even if that means placing them on the model.",
+                                    "type": "enum",
+                                    "options":
+                                    {
+                                        "buildplate": "On buildplate when possible",
+                                        "graceful": "On model if required"
+                                    },
+                                    "default_value": "buildplate",
+                                    "value": "'buildplate' if support_type == 'buildplate' else 'graceful'",
+                                    "resolve": "'buildplate' if 'buildplate' in extruderValues('support_tree_rest_preference') else 'graceful'",
+                                    "enabled": "support_enable and support_structure=='tree' and support_type == 'everywhere'",
+                                    "settable_per_mesh": true
+                                },
+                                "support_tree_bp_diameter":
+                                {
+                                    "label": "Initial Layer Diameter",
+                                    "description": "Diameter every branch tries to achieve when reaching the buildplate. Improves bed adhesion.",
+                                    "unit": "mm",
+                                    "type": "float",
+                                    "minimum_value": "0",
+                                    "maximum_value_warning": "20",
+                                    "default_value": 7.5,
+                                    "limit_to_extruder": "support_infill_extruder_nr",
+                                    "enabled": "support_enable and support_structure=='tree'",
+                                    "settable_per_mesh": true,
+                                    "settable_per_extruder": true
+                                },
+                                "support_tree_top_rate":
+                                {
+                                    "label": "Branch Density",
+                                    "description": "Adjusts the density of the support structure used to generate the tips of the branches. A higher value results in better overhangs, but the supports are harder to remove. Use Support Roof for very high values or ensure support density is similarly high at the top.",
+                                    "unit": "%",
+                                    "type": "float",
+                                    "minimum_value": "0.1",
+                                    "minimum_value_warning": "5",
+                                    "maximum_value_warning": "35",
+                                    "default_value": 15,
+                                    "value": "30 if support_roof_enable else 10",
+                                    "enabled": "support_enable and support_structure=='tree'",
+                                    "limit_to_extruder": "support_infill_extruder_nr",
+                                    "settable_per_mesh": true,
+                                    "settable_per_extruder": true
+                                },
+                                "support_tree_limit_branch_reach":
+                                {
+                                    "label": "Limit Branch Reach",
+                                    "description": "Limit how far each branch should travel from the point it supports. This can make the support more sturdy, but will increase the amount of branches (and because of that material usage/print time)",
+                                    "type": "bool",
+                                    "default_value": true,
+                                    "enabled": "support_enable and support_structure=='tree'",
+                                    "settable_per_mesh": true
+                                },
+                                "support_tree_branch_reach_limit":
+                                {
+                                    "label": "Optimal Branch Range",
+                                    "description": "A recomendation to how far branches can move from the points they support. Branches can violate this value to reach their destination (buildplate or a flat part of the model). Lowering this value will make the support more sturdy, but increase the amount of branches (and because of that material usage/print time) ",
+                                    "unit": "mm",
+                                    "type": "float",
+                                    "minimum_value": "1",
+                                    "minimum_value_warning": "10",
+                                    "default_value": 30,
+                                    "enabled": "support_enable and support_tree_limit_branch_reach and support_structure=='tree'",
+                                    "settable_per_mesh": true
                                 },
                                 "support_tree_collision_resolution": {
                                     "label": "Tree Support Collision Resolution",
@@ -4287,6 +4524,24 @@
                                     "min": 0,
                                     "max": 20000
                                 },
+                                "support_interface_priority":
+                                {
+                                    "label": "Support Interface Priority",
+                                    "description": "How support interface and support will interact when they overlap. Currently only implemented for support roof.",
+                                    "type": "enum",
+                                    "options":
+                                    {
+                                        "support_area_overwrite_interface_area": "Support preferred",
+                                        "interface_area_overwrite_support_area": "Interface preferred",
+                                        "support_lines_overwrite_interface_area": "Support lines preferred",
+                                        "interface_lines_overwrite_support_area": "Interface lines preferred",
+                                        "nothing": "Both overlap"
+                                    },
+                                    "default_value": "interface_area_overwrite_support_area",
+                                    "settable_per_extruder": false,
+                                    "enabled": "support_enable and support_structure=='tree' and support_roof_enable",
+                                    "settable_per_mesh": false
+                                },
                                 "support_interface_angles": {
                                     "label": "Support Interface Line Directions",
                                     "description": "A list of integer line directions to use. Elements from the list are used sequentially as the layers progress and when the end of the list is reached, it starts at the beginning again. The list items are separated by commas and the whole list is contained in square brackets. Default is an empty list which means use the default angles (alternates between 45 and 135 degrees if interfaces are quite thick or 90 degrees).",
@@ -4581,6 +4836,21 @@
                                     "min": 0,
                                     "max": 20000
                                 },
+                                "skirt_height":
+                                {
+                                    "label": "Skirt Height",
+                                    "description": "Printing the innermost skirt line with multiple layers makes it easy to remove the skirt.",
+                                    "type": "int",
+                                    "default_value": "3",
+                                    "value": "1",
+                                    "minimum_value": "1",
+                                    "maximum_value_warning": "10",
+                                    "maximum_value": "machine_height / layer_height",
+                                    "enabled": "resolveOrValue('adhesion_type') == 'skirt'",
+                                    "limit_to_extruder": "skirt_brim_extruder_nr",
+                                    "settable_per_mesh": false,
+                                    "settable_per_extruder": true
+                                },
                                 "skirt_gap": {
                                     "label": "Skirt Distance",
                                     "description": "The horizontal distance between the skirt and the first layer of the print.\nThis is the minimum distance. Multiple skirt lines will extend outwards from this distance.",
@@ -4678,6 +4948,17 @@
                                     "filter": [
                                         "advanced"
                                     ]
+                                },
+                                "brim_smart_ordering":
+                                {
+                                    "label": "Smart Brim",
+                                    "description": "Swap print order of the innermost and second innermost brim lines. This improves brim removal.",
+                                    "type": "bool",
+                                    "enabled": "resolveOrValue('adhesion_type') == 'brim'",
+                                    "default_value": true,
+                                    "limit_to_extruder": "skirt_brim_extruder_nr",
+                                    "settable_per_mesh": false,
+                                    "settable_per_extruder": true
                                 },
                                 "raft_margin": {
                                     "label": "Raft Extra Margin",
@@ -6222,6 +6503,18 @@
                             "min": -1,
                             "max": 1
                         },
+                        "hole_xy_offset_max_diameter":
+                        {
+                            "label": "Hole Horizontal Expansion Max Diameter",
+                            "description": "When greater than zero, the Hole Horizontal Expansion is gradually applied on small holes (small holes are expanded more). When set to zero the Hole Horizontal Expansion will be applied to all holes. Holes larger than the Hole Horizontal Expansion Max Diameter are not expanded.",
+                            "unit": "mm",
+                            "type": "float",
+                            "default_value": 0,
+                            "minimum_value": "0",
+                            "enabled": "hole_xy_offset > 0",
+                            "limit_to_extruder": "wall_0_extruder_nr",
+                            "settable_per_mesh": true
+                        },
                         "wall_transition_length": {
                             "label": "Wall Transition Length",
                             "description": "When transitioning between different numbers of walls as the part becomes thinner, a certain amount of space is allotted to split or join the wall lines.",
@@ -6562,6 +6855,34 @@
                                     "settable_per_mesh": true,
                                     "min": 1,
                                     "max": 20000
+                                },
+                                "jerk_wall_0_roofing":
+                                {
+                                    "label": "Top Surface Outer Wall Jerk",
+                                    "description": "The maximum instantaneous velocity change with which the top surface outermost walls are printed.",
+                                    "unit": "mm/s",
+                                    "type": "float",
+                                    "minimum_value": "0",
+                                    "maximum_value_warning": "50",
+                                    "default_value": 20,
+                                    "value": "jerk_wall_0",
+                                    "enabled": "resolveOrValue('jerk_enabled')",
+                                    "limit_to_extruder": "wall_0_extruder_nr",
+                                    "settable_per_mesh": true
+                                },
+                                "jerk_wall_x_roofing":
+                                {
+                                    "label": "Top Surface Inner Wall Jerk",
+                                    "description": "The maximum instantaneous velocity change with which the top surface inner walls are printed.",
+                                    "unit": "mm/s",
+                                    "type": "float",
+                                    "minimum_value": "0",
+                                    "maximum_value_warning": "50",
+                                    "default_value": 20,
+                                    "value": "jerk_wall_x",
+                                    "enabled": "resolveOrValue('jerk_enabled')",
+                                    "limit_to_extruder": "wall_x_extruder_nr",
+                                    "settable_per_mesh": true
                                 },
                                 "jerk_topbottom": {
                                     "label": "Top/Bottom Jerk",
@@ -7085,249 +7406,6 @@
                             "maximum_value_warning": "100000",
                             "settable_per_mesh": false
                         },
-                        "conical_overhang_hole_size": {
-                            "label": "Maximum Overhang Hole Area",
-                            "description": "The maximum area of a hole in the base of the model before it's removed by Make Overhang Printable.  Holes smaller than this will be retained.  A value of 0 mm² will fill all holes in the models base.",
-                            "unit": "mm²",
-                            "type": "float",
-                            "minimum_value": "0",
-                            "minimum_value_warning": "0",
-                            "default_value": 0,
-                            "enabled": "conical_overhang_enabled"
-                        },
-                        "material_alternate_walls": {
-                            "label": "Alternate Wall Directions",
-                            "description": "Alternate wall directions every other layer and inset. Useful for materials that can build up stress, like for metal printing.",
-                            "type": "bool",
-                            "default_value": false,
-                            "enabled": true,
-                            "settable_per_mesh": false,
-                            "settable_per_extruder": false
-                        },
-                        "raft_remove_inside_corners": {
-                            "label": "Remove Raft Inside Corners",
-                            "description": "Remove inside corners from the raft, causing the raft to become convex.",
-                            "type": "bool",
-                            "default_value": false,
-                            "resolve": "raft_remove_inside_corners",
-                            "enabled": "resolveOrValue('adhesion_type') == 'raft'",
-                            "settable_per_mesh": false,
-                            "settable_per_extruder": false
-                        },
-                        "raft_base_wall_count": {
-                            "label": "Raft Base Wall Count",
-                            "description": "The number of contours to print around the linear pattern in the base layer of the raft.",
-                            "type": "int",
-                            "default_value": 1,
-                            "enabled": "resolveOrValue('adhesion_type') == 'raft'",
-                            "resolve": "raft_base_wall_count",
-                            "settable_per_mesh": false,
-                            "settable_per_extruder": false
-                        }
-                    }
-                },
-                "new_and_unclassified": {
-                    "label": "Uncategorized options for newer engine",
-                    "icon": "category_quality",
-                    "description": "New options used by experimental slicer version",
-                    "type": "category",
-                    "children": {
-                        "skirt_height":
-                        {
-                            "label": "Skirt Height",
-                            "description": "Printing the innermost skirt line with multiple layers makes it easy to remove the skirt.",
-                            "type": "int",
-                            "default_value": "3",
-                            "value": "1",
-                            "minimum_value": "1",
-                            "maximum_value_warning": "10",
-                            "maximum_value": "machine_height / layer_height",
-                            "enabled": "resolveOrValue('adhesion_type') == 'skirt'",
-                            "limit_to_extruder": "skirt_brim_extruder_nr",
-                            "settable_per_mesh": false,
-                            "settable_per_extruder": true
-                        },
-                        "brim_smart_ordering":
-                        {
-                            "label": "Smart Brim",
-                            "description": "Swap print order of the innermost and second innermost brim lines. This improves brim removal.",
-                            "type": "bool",
-                            "enabled": "resolveOrValue('adhesion_type') == 'brim'",
-                            "default_value": true,
-                            "limit_to_extruder": "skirt_brim_extruder_nr",
-                            "settable_per_mesh": false,
-                            "settable_per_extruder": true
-                        },
-                        "hole_xy_offset_max_diameter":
-                        {
-                            "label": "Hole Horizontal Expansion Max Diameter",
-                            "description": "When greater than zero, the Hole Horizontal Expansion is gradually applied on small holes (small holes are expanded more). When set to zero the Hole Horizontal Expansion will be applied to all holes. Holes larger than the Hole Horizontal Expansion Max Diameter are not expanded.",
-                            "unit": "mm",
-                            "type": "float",
-                            "default_value": 0,
-                            "minimum_value": "0",
-                            "enabled": "hole_xy_offset > 0",
-                            "limit_to_extruder": "wall_0_extruder_nr",
-                            "settable_per_mesh": true
-                        },
-                        "small_skin_width":
-                        {
-                            "label": "Small Top/Bottom Width",
-                            "description": "Small top/bottom regions are filled with walls instead of the default top/bottom pattern. This helps to avoids jerky motions. Off for the topmost (air-exposed) layer by default (see 'Small Top/Bottom On Surface').",
-                            "value": "skin_line_width * 2",
-                            "default_value": 1,
-                            "minimum_value": "0",
-                            "maximum_value_warning": "skin_line_width * 10",
-                            "type": "float",
-                            "enabled": "(top_layers > 0 or bottom_layers > 0) and top_bottom_pattern != 'concentric'",
-                            "limit_to_extruder": "top_bottom_extruder_nr",
-                            "settable_per_mesh": true,
-                            "unit": "mm"
-                        },
-                        "support_tree_angle_slow":
-                        {
-                            "label": "Preferred Branch Angle",
-                            "description": "The preferred angle of the branches, when they do not have to avoid the model. Use a lower angle to make them more vertical and more stable. Use a higher angle for branches to merge faster.",
-                            "unit": "\u00b0",
-                            "type": "float",
-                            "minimum_value": "0",
-                            "minimum_value_warning": "10",
-                            "maximum_value": "support_tree_angle",
-                            "maximum_value_warning": "support_tree_angle-1",
-                            "default_value": 50,
-                            "value": "support_tree_angle * 2 / 3",
-                            "limit_to_extruder": "support_infill_extruder_nr",
-                            "enabled": "support_enable and support_structure=='tree'",
-                            "settable_per_mesh": true,
-                            "settable_per_extruder": true
-                        },
-                        "support_tree_tip_diameter":
-                        {
-                            "label": "Tip Diameter",
-                            "description": "The diameter of the top of the tip of the branches of tree support.",
-                            "unit": "mm",
-                            "type": "float",
-                            "minimum_value": "min_wall_line_width",
-                            "maximum_value": "support_tree_branch_diameter",
-                            "default_value": 0.4,
-                            "value": "support_line_width * 2",
-                            "limit_to_extruder": "support_infill_extruder_nr",
-                            "enabled": "support_enable and support_structure=='tree'",
-                            "settable_per_mesh": true,
-                            "settable_per_extruder": true
-                        },
-                        "support_tree_max_diameter_increase_by_merges_when_support_to_model":
-                        {
-                            "label": "Diameter Increase To Model",
-                            "description": "The most the diameter of a branch that has to connect to the model may increase by merging with branches that could reach the buildplate. Increasing this reduces print time, but increases the area of support that rests on model",
-                            "unit": "mm",
-                            "type": "float",
-                            "minimum_value": "0",
-                            "default_value": 1,
-                            "limit_to_extruder": "support_infill_extruder_nr",
-                            "enabled": "support_enable and support_structure=='tree' and resolveOrValue('support_type') == 'everywhere' ",
-                            "settable_per_mesh": true,
-                            "settable_per_extruder": true
-                        },
-                        "support_tree_min_height_to_model":
-                        {
-                            "label": "Minimum Height To Model",
-                            "description": "How tall a branch has to be if it is placed on the model. Prevents small blobs of support. This setting is ignored when a branch is supporting a support roof.",
-                            "unit": "mm",
-                            "type": "float",
-                            "minimum_value": "0",
-                            "maximum_value_warning": "5",
-                            "default_value": 3,
-                            "limit_to_extruder": "support_infill_extruder_nr",
-                            "enabled": "support_enable and support_structure=='tree' and resolveOrValue('support_type') == 'everywhere' ",
-                            "settable_per_mesh": true,
-                            "settable_per_extruder": true
-                        },
-                        "support_tree_rest_preference":
-                        {
-                            "label": "Rest Preference",
-                            "description": "The preferred placement of the support structures. If structures can't be placed at the preferred location, they will be place elsewhere, even if that means placing them on the model.",
-                            "type": "enum",
-                            "options":
-                            {
-                                "buildplate": "On buildplate when possible",
-                                "graceful": "On model if required"
-                            },
-                            "default_value": "buildplate",
-                            "value": "'buildplate' if support_type == 'buildplate' else 'graceful'",
-                            "resolve": "'buildplate' if 'buildplate' in extruderValues('support_tree_rest_preference') else 'graceful'",
-                            "enabled": "support_enable and support_structure=='tree' and support_type == 'everywhere'",
-                            "settable_per_mesh": true
-                        },
-                        "support_tree_bp_diameter":
-                        {
-                            "label": "Initial Layer Diameter",
-                            "description": "Diameter every branch tries to achieve when reaching the buildplate. Improves bed adhesion.",
-                            "unit": "mm",
-                            "type": "float",
-                            "minimum_value": "0",
-                            "maximum_value_warning": "20",
-                            "default_value": 7.5,
-                            "limit_to_extruder": "support_infill_extruder_nr",
-                            "enabled": "support_enable and support_structure=='tree'",
-                            "settable_per_mesh": true,
-                            "settable_per_extruder": true
-                        },
-                        "support_interface_priority":
-                        {
-                            "label": "Support Interface Priority",
-                            "description": "How support interface and support will interact when they overlap. Currently only implemented for support roof.",
-                            "type": "enum",
-                            "options":
-                            {
-                                "support_area_overwrite_interface_area": "Support preferred",
-                                "interface_area_overwrite_support_area": "Interface preferred",
-                                "support_lines_overwrite_interface_area": "Support lines preferred",
-                                "interface_lines_overwrite_support_area": "Interface lines preferred",
-                                "nothing": "Both overlap"
-                            },
-                            "default_value": "interface_area_overwrite_support_area",
-                            "settable_per_extruder": false,
-                            "enabled": "support_enable and support_structure=='tree' and support_roof_enable",
-                            "settable_per_mesh": false
-                        },
-                        "support_tree_top_rate":
-                        {
-                            "label": "Branch Density",
-                            "description": "Adjusts the density of the support structure used to generate the tips of the branches. A higher value results in better overhangs, but the supports are harder to remove. Use Support Roof for very high values or ensure support density is similarly high at the top.",
-                            "unit": "%",
-                            "type": "float",
-                            "minimum_value": "0.1",
-                            "minimum_value_warning": "5",
-                            "maximum_value_warning": "35",
-                            "default_value": 15,
-                            "value": "30 if support_roof_enable else 10",
-                            "enabled": "support_enable and support_structure=='tree'",
-                            "limit_to_extruder": "support_infill_extruder_nr",
-                            "settable_per_mesh": true,
-                            "settable_per_extruder": true
-                        },
-                        "support_tree_limit_branch_reach":
-                        {
-                            "label": "Limit Branch Reach",
-                            "description": "Limit how far each branch should travel from the point it supports. This can make the support more sturdy, but will increase the amount of branches (and because of that material usage/print time)",
-                            "type": "bool",
-                            "default_value": true,
-                            "enabled": "support_enable and support_structure=='tree'",
-                            "settable_per_mesh": true
-                        },
-                        "support_tree_branch_reach_limit":
-                        {
-                            "label": "Optimal Branch Range",
-                            "description": "A recomendation to how far branches can move from the points they support. Branches can violate this value to reach their destination (buildplate or a flat part of the model). Lowering this value will make the support more sturdy, but increase the amount of branches (and because of that material usage/print time) ",
-                            "unit": "mm",
-                            "type": "float",
-                            "minimum_value": "1",
-                            "minimum_value_warning": "10",
-                            "default_value": 30,
-                            "enabled": "support_enable and support_tree_limit_branch_reach and support_structure=='tree'",
-                            "settable_per_mesh": true
-                        },
                         "meshfix_fluid_motion_enabled":
                         {
                             "label": "Enable Fluid Motion",
@@ -7370,130 +7448,44 @@
                             "minimum_value_warning": "1",
                             "maximum_value_warning": "35"
                         },
-                        "small_skin_on_surface":
-                        {
-                            "label": "Small Top/Bottom On Surface",
-                            "description": "Enable small (up to 'Small Top/Bottom Width') regions on the topmost skinned layer (exposed to air) to be filled with walls instead of the default pattern.",
-                            "value": "False",
-                            "default_value": false,
+                        "conical_overhang_hole_size": {
+                            "label": "Maximum Overhang Hole Area",
+                            "description": "The maximum area of a hole in the base of the model before it's removed by Make Overhang Printable.  Holes smaller than this will be retained.  A value of 0 mm² will fill all holes in the models base.",
+                            "unit": "mm²",
+                            "type": "float",
+                            "minimum_value": "0",
+                            "minimum_value_warning": "0",
+                            "default_value": 0,
+                            "enabled": "conical_overhang_enabled"
+                        },
+                        "material_alternate_walls": {
+                            "label": "Alternate Wall Directions",
+                            "description": "Alternate wall directions every other layer and inset. Useful for materials that can build up stress, like for metal printing.",
                             "type": "bool",
-                            "enabled": "small_skin_width > 0 and top_layers > 0",
-                                "limit_to_extruder": "top_bottom_extruder_nr",
-                            "settable_per_mesh": true
+                            "default_value": false,
+                            "enabled": true,
+                            "settable_per_mesh": false,
+                            "settable_per_extruder": false
                         },
-                        "wall_0_material_flow_roofing":
-                        {
-                            "label": "Top Surface Outer Wall Flow",
-                            "description": "Flow compensation on the top surface outermost wall line.",
-                            "unit": "%",
-                            "type": "float",
-                            "default_value": 100,
-                            "value": "wall_0_material_flow",
-                            "minimum_value": "0.0001",
-                            "minimum_value_warning": "50",
-                            "maximum_value_warning": "150",
-                            "limit_to_extruder": "wall_0_extruder_nr",
-                            "settable_per_mesh": true
+                        "raft_remove_inside_corners": {
+                            "label": "Remove Raft Inside Corners",
+                            "description": "Remove inside corners from the raft, causing the raft to become convex.",
+                            "type": "bool",
+                            "default_value": false,
+                            "resolve": "raft_remove_inside_corners",
+                            "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                            "settable_per_mesh": false,
+                            "settable_per_extruder": false
                         },
-                        "wall_x_material_flow_roofing":
-                        {
-                            "label": "Top Surface Inner Wall(s) Flow",
-                            "description": "Flow compensation on top surface wall lines for all wall lines except the outermost one.",
-                            "unit": "%",
-                            "type": "float",
-                            "default_value": 100,
-                            "value": "wall_x_material_flow",
-                            "minimum_value": "0.0001",
-                            "minimum_value_warning": "50",
-                            "maximum_value_warning": "150",
-                            "limit_to_extruder": "wall_x_extruder_nr",
-                            "settable_per_mesh": true
-                        },
-                        "jerk_wall_0_roofing":
-                        {
-                            "label": "Top Surface Outer Wall Jerk",
-                            "description": "The maximum instantaneous velocity change with which the top surface outermost walls are printed.",
-                            "unit": "mm/s",
-                            "type": "float",
-                            "minimum_value": "0",
-                            "maximum_value_warning": "50",
-                            "default_value": 20,
-                            "value": "jerk_wall_0",
-                            "enabled": "resolveOrValue('jerk_enabled')",
-                            "limit_to_extruder": "wall_0_extruder_nr",
-                            "settable_per_mesh": true
-                        },
-                        "jerk_wall_x_roofing":
-                        {
-                            "label": "Top Surface Inner Wall Jerk",
-                            "description": "The maximum instantaneous velocity change with which the top surface inner walls are printed.",
-                            "unit": "mm/s",
-                            "type": "float",
-                            "minimum_value": "0",
-                            "maximum_value_warning": "50",
-                            "default_value": 20,
-                            "value": "jerk_wall_x",
-                            "enabled": "resolveOrValue('jerk_enabled')",
-                            "limit_to_extruder": "wall_x_extruder_nr",
-                            "settable_per_mesh": true
-                        },
-                        "speed_wall_0_roofing":
-                        {
-                            "label": "Top Surface Outer Wall Speed",
-                            "description": "The speed at which the top surface outermost wall is printed.",
-                            "unit": "mm/s",
-                            "type": "float",
-                            "minimum_value": "0.1",
-                            "maximum_value": "math.sqrt(machine_max_feedrate_x ** 2 + machine_max_feedrate_y ** 2)",
-                            "maximum_value_warning": "150",
-                            "default_value": 30,
-                            "value": "speed_wall_0",
-                            "limit_to_extruder": "wall_0_extruder_nr",
-                            "settable_per_mesh": true
-                        },
-                        "speed_wall_x_roofing":
-                        {
-                            "label": "Top Surface Inner Wall Speed",
-                            "description": "The speed at which the top surface inner walls are printed.",
-                            "unit": "mm/s",
-                            "type": "float",
-                            "minimum_value": "0.1",
-                            "maximum_value": "math.sqrt(machine_max_feedrate_x ** 2 + machine_max_feedrate_y ** 2)",
-                            "maximum_value_warning": "150",
-                            "default_value": 60,
-                            "value": "speed_wall_x",
-                            "limit_to_extruder": "wall_x_extruder_nr",
-                            "settable_per_mesh": true
-                        },
-                        "acceleration_wall_0_roofing":
-                        {
-                            "label": "Top Surface Outer Wall Acceleration",
-                            "description": "The acceleration with which the top surface outermost walls are printed.",
-                            "unit": "mm/s\u00b2",
-                            "type": "float",
-                            "minimum_value": "0.1",
-                            "minimum_value_warning": "100",
-                            "maximum_value_warning": "10000",
-                            "default_value": 3000,
-                            "value": "acceleration_wall_0",
-                            "enabled": "resolveOrValue('acceleration_enabled')",
-                            "limit_to_extruder": "wall_0_extruder_nr",
-                            "settable_per_mesh": true
-                        },
-                        "acceleration_wall_x_roofing":
-                        {
-                            "label": "Top Surface Inner Wall Acceleration",
-                            "description": "The acceleration with which the top surface inner walls are printed.",
-                            "unit": "mm/s\u00b2",
-                            "type": "float",
-                            "minimum_value": "0.1",
-                            "minimum_value_warning": "100",
-                            "maximum_value_warning": "10000",
-                            "default_value": 3000,
-                            "value": "acceleration_wall_x",
-                            "enabled": "resolveOrValue('acceleration_enabled')",
-                            "limit_to_extruder": "wall_x_extruder_nr",
-                            "settable_per_mesh": true
+                        "raft_base_wall_count": {
+                            "label": "Raft Base Wall Count",
+                            "description": "The number of contours to print around the linear pattern in the base layer of the raft.",
+                            "type": "int",
+                            "default_value": 1,
+                            "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                            "resolve": "raft_base_wall_count",
+                            "settable_per_mesh": false,
+                            "settable_per_extruder": false
                         },
                         "group_outer_walls":
                         {
