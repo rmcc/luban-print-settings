@@ -2077,7 +2077,7 @@
                             "maximum_value_warning": "120",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false,
-                            "resolve": "sum('material_shrinkage_percentage') / len('material_shrinkage_percentage')",
+                            "resolve": "max(extruderValues(\"material_shrinkage_percentage\")) if any(extruderValues('material_is_support_material')) else sum(extruderValues(\"material_shrinkage_percentage\")) / len(extruderValues(\"material_shrinkage_percentage\"))",
                             "min": 0,
                             "max": 20000
                         },
@@ -2473,7 +2473,7 @@
                                     "default_value": 0.4,
                                     "type": "float",
                                     "calcu_value": "line_width",
-                                    "visible": "resolveOrValue(adhesion_type) === 'skirt' || resolveOrValue(adhesion_type) === 'brim' || resolveOrValue(prime_tower_brim_enable)",
+                                    "visible": "resolveOrValue('adhesion_type') == 'skirt' || resolveOrValue('adhesion_type') == 'brim' || resolveOrValue('draft_shield_enabled') || resolveOrValue('ooze_shield_enabled')",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": true,
                                     "filter": [
@@ -4878,7 +4878,7 @@
                                     "minimum_value": "0",
                                     "minimum_value_warning": "25",
                                     "maximum_value_warning": "2500",
-                                    "visible": "adhesion_type === 'skirt' || adhesion_type === 'brim' || prime_tower_brim_enable",
+                                    "visible": "adhesion_type === 'skirt' || adhesion_type === 'brim'",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": false,
                                     "filter": [
@@ -5286,11 +5286,11 @@
                             ]
                         },
                         "prime_tower_brim_enable": {
-                            "label": "Prime Tower Brim",
-                            "description": "Prime-towers might need the extra adhesion afforded by a brim even if the model doesn't. Presently can't be used with the 'Raft' adhesion-type.",
+                            "value": "resolveOrValue('adhesion_type') in ['raft', 'brim']",
+                            "label": "Prime Tower Base",
+                            "description": "By enabling this setting, your prime-tower will get a brim, even if the model doesn't. If you want a sturdier base for a high tower, you can increase the base height.",
                             "type": "bool",
                             "visible": "dual_helper_type === 'prime_tower' && adhesion_type !== 'raft'",
-                            "resolve": "(prime_tower_enable) and ((adhesion_type) in (none', 'skirt))",
                             "default_value": true,
                             "settable_per_mesh": false,
                             "settable_per_extruder": false,
@@ -5298,6 +5298,62 @@
                                 "advanced",
                                 "success"
                             ]
+                        },
+                        "prime_tower_base_size":
+                        {
+                            "value": "resolveOrValue('raft_margin') if resolveOrValue('adhesion_type') == 'raft' else resolveOrValue('brim_width')",
+                            "label": "Prime Tower Base Size",
+                            "description": "The width of the prime tower brim/base. A larger base enhances adhesion to the build plate, but also reduces the effective print area.",
+                            "type": "float",
+                            "unit": "mm",
+                            "enabled": "resolveOrValue('prime_tower_enable') and (resolveOrValue('prime_tower_brim_enable') or resolveOrValue('adhesion_type') == 'raft')",
+                            "default_value": "resolveOrValue('brim_width')",
+                            "minimum_value": "0",
+                            "maximum_value": "min(0.5 * machine_width, 0.5 * machine_depth)",
+                            "settable_per_mesh": false,
+                            "settable_per_extruder": false
+                        },
+                        "prime_tower_base_height":
+                        {
+                            "value": "resolveOrValue('layer_height')",
+                            "label": "Prime Tower Base Height",
+                            "description": "The height of the prime tower base. Increasing this value will result in a more sturdy prime tower because the base will be wider. If this setting is too low, the prime tower will not have a sturdy base.",
+                            "type": "float",
+                            "unit": "mm",
+                            "enabled": "resolveOrValue('prime_tower_enable') and (resolveOrValue('prime_tower_brim_enable') or resolveOrValue('adhesion_type') == 'raft')",
+                            "default_value": 0,
+                            "minimum_value": "0",
+                            "maximum_value": "machine_height",
+                            "settable_per_mesh": false,
+                            "settable_per_extruder": false
+                        },
+                        "prime_tower_base_curve_magnitude":
+                        {
+                            "label": "Prime Tower Base Slope",
+                            "description": "The magnitude factor used for the slope of the prime tower base. If you increase this value, the base will become slimmer. If you decrease it, the base will become thicker.",
+                            "type": "float",
+                            "enabled": "resolveOrValue('prime_tower_enable') and (resolveOrValue('prime_tower_brim_enable') or resolveOrValue('adhesion_type') == 'raft')",
+                            "default_value": 4,
+                            "minimum_value": "0",
+                            "maximum_value": "10",
+                            "settable_per_mesh": false,
+                            "settable_per_extruder": false
+                        },
+                        "prime_tower_raft_base_line_spacing":
+                        {
+                            "label": "Prime Tower Raft Line Spacing",
+                            "description": "The distance between the raft lines for the unique prime tower raft layer. Wide spacing makes for easy removal of the raft from the build plate.",
+                            "unit": "mm",
+                            "type": "float",
+                            "default_value": 1.6,
+                            "value": "raft_base_line_spacing",
+                            "minimum_value": "0",
+                            "minimum_value_warning": "raft_base_line_width",
+                            "maximum_value_warning": "100",
+                            "enabled": "resolveOrValue('prime_tower_enable') and resolveOrValue('adhesion_type') == 'raft'",
+                            "settable_per_mesh": false,
+                            "settable_per_extruder": true,
+                            "limit_to_extruder": "raft_base_extruder_nr"
                         },
                         "ooze_shield_enabled": {
                             "label": "Enabled Ooze Shield",
@@ -5565,7 +5621,6 @@
                                 "z_seam_relative": {
                                     "label": "Z Seam Relative",
                                     "description": "When enabled, the z seam coordinates are relative to each part's centre. When disabled, the coordinates define an absolute position on the build plate.",
-                                    "unit": "mm",
                                     "type": "bool",
                                     "default_value": false,
                                     "visible": "z_seam_type === 'back'",
@@ -5933,7 +5988,7 @@
                                     "type": "float",
                                     "minimum_value": "5",
                                     "minimum_value_warning": "50",
-                                    "maximum_value_warning": "150",
+                                    "maximum_value_warning": "250",
                                     "visible": "bridge_settings_enabled",
                                     "settable_per_mesh": true,
                                     "min": 0,
@@ -5970,7 +6025,7 @@
                                     "type": "float",
                                     "minimum_value": "5",
                                     "minimum_value_warning": "50",
-                                    "maximum_value_warning": "150",
+                                    "maximum_value_warning": "250",
                                     "visible": "bridge_settings_enabled",
                                     "settable_per_mesh": true,
                                     "min": 0,
@@ -7332,7 +7387,7 @@
                             "type": "extruder",
                             "default_value": "0",
                             "value": "adhesion_extruder_nr",
-                            "enabled": "extruders_enabled_count > 1 and (resolveOrValue('adhesion_type') == 'skirt' or resolveOrValue('adhesion_type') == 'brim' or resolveOrValue('prime_tower_brim_enable'))",
+                            "enabled": "extruders_enabled_count > 1 and (resolveOrValue('adhesion_type') in ['skirt', 'brim'])",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false
                         },
@@ -7378,7 +7433,7 @@
                             "minimum_value": "0.0",
                             "maximum_value_warning": "50.0",
                             "maximum_value": "0.5 * min(machine_width, machine_depth)",
-                            "enabled": "resolveOrValue('adhesion_type') == 'brim' or resolveOrValue('prime_tower_brim_enable')",
+                            "enabled": "resolveOrValue('adhesion_type') == 'brim'",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false,
                             "limit_to_extruder": "skirt_brim_extruder_nr"
