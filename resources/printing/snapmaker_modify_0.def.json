@@ -2681,6 +2681,19 @@
                                     "limit_to_extruder": "wall_x_extruder_nr",
                                     "settable_per_mesh": true
                                 },
+                                "seam_overhang_angle":
+                                {
+                                    "label": "Seam Overhanging Wall Angle",
+                                    "description": "Try to prevent seams on walls that overhang more than this angle. When the value is 90, no walls will be treated as overhanging.",
+                                    "unit": "\u00b0",
+                                    "type": "float",
+                                    "minimum_value": "0",
+                                    "minimum_value_warning": "2",
+                                    "maximum_value": "90",
+                                    "default_value": 90,
+                                    "value": "support_angle",
+                                    "settable_per_mesh": true
+                                },
                                 "wall_overhang_speed_factor": {
                                     "label": "Overhanging Wall Speed",
                                     "description": "Overhanging walls will be printed at this percentage of their normal print speed.",
@@ -3969,6 +3982,34 @@
                             "min": 0,
                             "max": 20000
                         },
+                        "support_z_seam_away_from_model":
+                        {
+                            "label": "Support Z Seam Away from Model",
+                            "description": "Manage the spatial relationship between the z seam of the support structure and the actual 3D model. This control is crucial as it allows users to ensure the seamless removal of support structures post-printing, without inflicting damage or leaving marks on the printed model.",
+                            "type": "bool",
+                            "default_value": true,
+                            "enabled": "support_enable",
+                            "settable_per_mesh": false,
+                            "settable_per_extruder": true,
+                            "settable_per_meshgroup": false,
+                            "children":
+                            {
+                                "support_z_seam_min_distance":
+                                {
+                                    "label": "Min Z Seam Distance from Model",
+                                    "description": "The distance between the model and its support structure at the z-axis seam.",
+                                    "unit": "mm",
+                                    "minimum_value": "0.001",
+                                    "value": "line_width * 2",
+                                    "default_value": 0.8,
+                                    "maximum_value_warning": "line_width * 4",
+                                    "type": "float",
+                                    "enabled": "support_z_seam_away_from_model and support_enable",
+                                    "settable_per_mesh": false,
+                                    "settable_per_extruder": true
+                                }
+                            }
+                        },
                         "support_type": {
                             "label": "Support Placement",
                             "description": "Adjusts the placement of the support structures. The placement can be set to touching build plate or everywhere. When set to everywhere the support structures will also be printed on the model.",
@@ -4779,6 +4820,18 @@
                             "min": 0,
                             "max": 20000
                         },
+                        "support_infill_density_multiplier_initial_layer":
+                        {
+                            "label": "Support Infill Density Multiplier Initial Layer",
+                            "description": "Multiplier for the infill on the initial layers of the support. Increasing this may help for bed adhesion.",
+                            "type": "int",
+                            "minimum_value": "1",
+                            "default_value": 1,
+                            "enabled": "support_enable or support_meshes_present",
+                            "limit_to_extruder": "support_extruder_nr_layer_0",
+                            "settable_per_mesh": false,
+                            "settable_per_extruder": true
+                        },
                         "support_infill_angles": {
                             "label": "Support Infill Line Directions",
                             "description": "A list of integer line directions to use. Elements from the list are used sequentially as the layers progress and when the end of the list is reached, it starts at the beginning again. The list items are separated by commas and the whole list is contained in square brackets. Default is an empty list which means use the default angle 0 degrees.",
@@ -5330,6 +5383,20 @@
                             "settable_per_mesh": false,
                             "settable_per_extruder": true
                         },
+                        "prime_tower_min_shell_thickness":
+                        {
+                            "label": "Prime Tower Minimum Shell Thickness",
+                            "description": "The minimum thickness of the prime tower shell. You may increase it to make the prime tower stronger.",
+                            "unit": "mm",
+                            "type": "float",
+                            "default_value": 0.4,
+                            "minimum_value": "max(extruderValues('prime_tower_line_width'))",
+                            "maximum_value_warning": "10.0",
+                            "enabled": "prime_tower_enable and resolveOrValue('prime_tower_mode') == 'interleaved'",
+                            "resolve": "max(extruderValues('prime_tower_line_width'))",
+                            "settable_per_mesh": false,
+                            "settable_per_extruder": false
+                        },
                         "prime_tower_position_x": {
                             "label": "Prime Tower X Position",
                             "description": "The x coordinate of the position of the prime tower.",
@@ -5681,6 +5748,15 @@
                                             "max": 20000
                                         }
                                     }
+                                },
+                                "z_seam_on_vertex":
+                                {
+                                    "label": "Z Seam On Vertex",
+                                    "description": "Place the z-seam on a polygon vertex. Switching this off can place the seam between vertices as well. (Keep in mind that this won't override the restrictions on placing the seam on an unsupported overhang.)",
+                                    "type": "bool",
+                                    "default_value": false,
+                                    "settable_per_mesh": true,
+                                    "enabled": "z_seam_type == 'back' || z_seam_type == 'shortest'"
                                 },
                                 "z_seam_corner": {
                                     "label": "Seam Corner Preference",
@@ -7523,6 +7599,38 @@
                             "settable_per_extruder": false,
                             "limit_to_extruder": "skirt_brim_extruder_nr"
                         },
+                        "raft_base_infill_overlap":
+                        {
+                            "label": "Raft Base Infill Overlap Percentage",
+                            "description": "The amount of overlap between the infill and the walls of the raft base, as a percentage of the infill line width. A slight overlap allows the walls to connect firmly to the infill.",
+                            "unit": "%",
+                            "type": "float",
+                            "default_value": 0,
+                            "minimum_value_warning": "-50",
+                            "maximum_value_warning": "100",
+                            "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                            "settable_per_mesh": false,
+                            "settable_per_extruder": true,
+                            "limit_to_extruder": "raft_base_extruder_nr",
+                            "children":
+                            {
+                                "raft_base_infill_overlap_mm":
+                                {
+                                    "label": "Raft Base Infill Overlap",
+                                    "description": "The amount of overlap between the infill and the walls of the raft base. A slight overlap allows the walls to connect firmly to the infill.",
+                                    "unit": "mm",
+                                    "type": "float",
+                                    "default_value": 0.0,
+                                    "minimum_value_warning": "-0.5 * machine_nozzle_size",
+                                    "maximum_value_warning": "machine_nozzle_size",
+                                    "value": "raft_base_line_width * raft_base_infill_overlap / 100",
+                                    "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                                    "settable_per_mesh": false,
+                                    "settable_per_extruder": true,
+                                    "limit_to_extruder": "raft_base_extruder_nr"
+                                }
+                            }
+                        },
                         "raft_interface_layers": {
                             "label": "Raft Middle Layers",
                             "description": "The number of layers between the base and the surface of the raft. These comprise the main thickness of the raft. Increasing this creates a thicker, sturdier raft.",
@@ -8267,6 +8375,54 @@
                             "min": 0,
                             "max": 20000
                         },
+                        "raft_interface_z_offset":
+                        {
+                            "label": "Raft Interface Z Offset",
+                            "description": "When printing the first layer of the raft interface, translate by this offset to customize the adhesion between base and interface. A negative offset should improve the adhesion.",
+                            "unit": "mm",
+                            "type": "float",
+                            "default_value": 0.0,
+                            "minimum_value_warning": "-raft_interface_thickness / 2",
+                            "minimum_value": "-raft_interface_thickness",
+                            "maximum_value_warning": "raft_interface_thickness / 2",
+                            "maximum_value": "raft_interface_thickness",
+                            "enabled": "resolveOrValue('adhesion_type') == 'raft' and raft_interface_layers > 0",
+                            "settable_per_mesh": false,
+                            "settable_per_extruder": true,
+                            "limit_to_extruder": "raft_interface_extruder_nr"
+                        },
+                        "raft_interface_infill_overlap":
+                        {
+                            "label": "Raft Interface Infill Overlap Percentage",
+                            "description": "The amount of overlap between the infill and the walls of the raft interface, as a percentage of the infill line width. A slight overlap allows the walls to connect firmly to the infill.",
+                            "unit": "%",
+                            "type": "float",
+                            "default_value": 0,
+                            "minimum_value_warning": "-50",
+                            "maximum_value_warning": "100",
+                            "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                            "settable_per_mesh": false,
+                            "settable_per_extruder": true,
+                            "limit_to_extruder": "raft_interface_extruder_nr",
+                            "children":
+                            {
+                                "raft_interface_infill_overlap_mm":
+                                {
+                                    "label": "Raft Interface Infill Overlap",
+                                    "description": "The amount of overlap between the infill and the walls of the raft interface. A slight overlap allows the walls to connect firmly to the infill.",
+                                    "unit": "mm",
+                                    "type": "float",
+                                    "default_value": 0.0,
+                                    "minimum_value_warning": "-0.5 * machine_nozzle_size",
+                                    "maximum_value_warning": "machine_nozzle_size",
+                                    "value": "raft_interface_line_width * raft_interface_infill_overlap / 100",
+                                    "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                                    "settable_per_mesh": false,
+                                    "settable_per_extruder": true,
+                                    "limit_to_extruder": "raft_interface_extruder_nr"
+                                }
+                            }
+                        },
                         "raft_surface_layers": {
                             "label": "Raft Top Layers",
                             "description": "The number of top layers on top of the 2nd raft layer. These are fully filled layers that the model sits on. 2 layers result in a smoother top surface than 1.",
@@ -8332,6 +8488,22 @@
                             "min": 0,
                             "max": 20000
                         },
+                        "raft_surface_z_offset":
+                        {
+                            "label": "Raft Surface Z Offset",
+                            "description": "When printing the first layer of the raft surface, translate by this offset to customize the adhesion between interface and surface. A negative offset should improve the adhesion.",
+                            "unit": "mm",
+                            "type": "float",
+                            "default_value": 0.0,
+                            "minimum_value_warning": "-raft_surface_thickness / 2",
+                            "minimum_value": "-raft_surface_thickness",
+                            "maximum_value_warning": "raft_surface_thickness / 2",
+                            "maximum_value": "raft_surface_thickness",
+                            "enabled": "resolveOrValue('adhesion_type') == 'raft' and raft_surface_layers > 0",
+                            "settable_per_mesh": false,
+                            "settable_per_extruder": true,
+                            "limit_to_extruder": "raft_surface_extruder_nr"
+                        },
                         "raft_surface_monotonic":
                         {
                             "label": "Monotonic Raft Top Surface Order",
@@ -8343,6 +8515,38 @@
                             "settable_per_mesh": false,
                             "settable_per_extruder": true,
                             "limit_to_extruder": "raft_surface_extruder_nr"
+                        },
+                        "raft_surface_infill_overlap":
+                        {
+                            "label": "Raft Surface Infill Overlap Percentage",
+                            "description": "The amount of overlap between the infill and the walls of the raft surface, as a percentage of the infill line width. A slight overlap allows the walls to connect firmly to the infill.",
+                            "unit": "%",
+                            "type": "float",
+                            "default_value": 0,
+                            "minimum_value_warning": "-50",
+                            "maximum_value_warning": "100",
+                            "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                            "settable_per_mesh": false,
+                            "settable_per_extruder": true,
+                            "limit_to_extruder": "raft_surface_extruder_nr",
+                            "children":
+                            {
+                                "raft_surface_infill_overlap_mm":
+                                {
+                                    "label": "Raft Surface Infill Overlap",
+                                    "description": "The amount of overlap between the infill and the walls of the raft surface. A slight overlap allows the walls to connect firmly to the infill.",
+                                    "unit": "mm",
+                                    "type": "float",
+                                    "default_value": 0.0,
+                                    "minimum_value_warning": "-0.5 * machine_nozzle_size",
+                                    "maximum_value_warning": "machine_nozzle_size",
+                                    "value": "raft_surface_line_width * raft_surface_infill_overlap / 100",
+                                    "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                                    "settable_per_mesh": false,
+                                    "settable_per_extruder": true,
+                                    "limit_to_extruder": "raft_surface_extruder_nr"
+                                }
+                            }
                         },
                         "raft_wall_count":
                         {
@@ -8658,6 +8862,63 @@
                             },
                             "min": 0,
                             "max": 20000
+                        },
+                        "raft_flow":
+                        {
+                            "label": "Raft Flow",
+                            "description": "The amount of material, relative to a normal extrusion line, to extrude during raft printing. Having an increased flow may improve adhesion and raft structural strength.",
+                            "type": "float", 
+                            "unit": "%",
+                            "default_value": 100.0,
+                            "minimum_value": "10",
+                            "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                            "settable_per_mesh": false,
+                            "settable_per_extruder": true,
+                            "children":
+                            {
+                                "raft_base_flow":
+                                {   
+                                    "label": "Raft Base Flow",
+                                    "description": "The amount of material, relative to a normal extrusion line, to extrude during raft base printing. Having an increased flow may improve adhesion and raft structural strength.",                   
+                                    "type": "float", 
+                                    "unit": "%",
+                                    "default_value": 100.0,
+                                    "value": "raft_flow",
+                                    "minimum_value": "10",
+                                    "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                                    "settable_per_mesh": false,
+                                    "settable_per_extruder": true,
+                                    "limit_to_extruder": "raft_base_extruder_nr"
+                                },
+                                "raft_interface_flow":
+                                {
+                                    "label": "Raft Interface Flow",
+                                    "description": "The amount of material, relative to a normal extrusion line, to extrude during raft interface printing. Having an increased flow may improve adhesion and raft structural strength.",
+                                    "type": "float",
+                                    "unit": "%",
+                                    "default_value": 100.0,
+                                    "value": "raft_flow",
+                                    "minimum_value": "10",
+                                    "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                                    "settable_per_mesh": false,
+                                    "settable_per_extruder": true,
+                                    "limit_to_extruder": "raft_interface_extruder_nr"
+                                },
+                                "raft_surface_flow":
+                                {
+                                    "label": "Raft Surface Flow",
+                                    "description": "The amount of material, relative to a normal extrusion line, to extrude during raft surface printing. Having an increased flow may improve adhesion and raft structural strength.",
+                                    "type": "float",
+                                    "unit": "%",
+                                    "default_value": 100.0,
+                                    "value": "raft_flow",
+                                    "minimum_value": "10",
+                                    "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                                    "settable_per_mesh": false,
+                                    "settable_per_extruder": true,
+                                    "limit_to_extruder": "raft_surface_extruder_nr"
+                                }
+                            }
                         },
                         "layer_start_x": {
                             "label": "Layer Start X",
