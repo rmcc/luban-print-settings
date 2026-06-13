@@ -4,6 +4,6 @@
 
 - Compare `fdmprinter.def.json` and `snapmaker_modify_0.def.json`
 
-   ```> npm run compare-mod```
+   ```> npx tsx scripts/compare-modifications.ts```
 
 - Normalize all 3D printing definition files (TODO)

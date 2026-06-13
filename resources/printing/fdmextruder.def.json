@@ -1,12 +1,12 @@
 {
     "name": "Extruder",
-    "version": 3,
+    "version": 2,
     "metadata":
     {
         "type": "extruder",
         "author": "Ultimaker",
         "manufacturer": "Unknown",
-        "setting_version": 21,
+        "setting_version": 22,
         "visible": false,
         "position": "0"
     },
@@ -74,6 +74,17 @@
                     "settable_per_extruder": true,
                     "settable_per_meshgroup": false,
                     "settable_globally": false
+                },
+                "machine_extruder_prestart_code":
+                {
+                    "default_value": "",
+                    "description": "Prestart g-code to execute before switching to this extruder.",
+                    "label": "Extruder Prestart G-Code",
+                    "settable_globally": false,
+                    "settable_per_extruder": true,
+                    "settable_per_mesh": false,
+                    "settable_per_meshgroup": false,
+                    "type": "str"
                 },
                 "machine_extruder_start_code":
                 {
@@ -203,6 +214,18 @@
                     "settable_per_mesh": false,
                     "settable_per_extruder": true
                 },
+                "machine_extruder_change_duration":
+                {
+                    "default_value": 0,
+                    "description": "When using a multi tool setup, this value is the tool change time in seconds.  This value will be added to the estimate time based on the number of changes that occur.",
+                    "label": "Extruder Change duration",
+                    "minimum_value": "0",
+                    "settable_globally": false,
+                    "settable_per_extruder": true,
+                    "settable_per_mesh": false,
+                    "settable_per_meshgroup": false,
+                    "type": "float"
+               },
                "machine_extruder_cooling_fan_number":
                 {
                     "label": "Extruder Print Cooling Fan",

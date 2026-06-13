@@ -6,7 +6,7 @@
         "type": "machine",
         "author": "Snapmaker",
         "manufacturer": "Snapmaker",
-        "setting_version": 0.13,
+        "setting_version": 0.14,
         "file_formats": "text/x-gcode;application/x-stl-ascii;application/x-stl-binary;application/x-wavefront-obj;application/x3g",
         "visible": false,
         "has_materials": true,
@@ -6516,6 +6516,21 @@
                             "min": 0,
                             "max": 20000
                         },
+			"retraction_combing_avoid_distance":
+			{
+			    "label": "Inside Travel Avoid Distance",
+			    "description": "The distance between the nozzle and already printed outer walls when travelling inside a model.",
+			    "unit": "mm",
+			    "type": "float",
+			    "default_value": 0.6,
+			    "calcu_value": "machine_nozzle_size * 1.5",
+			    "minimum_value": "0",
+			    "minimum_value_warning": "machine_nozzle_size * 0.5",
+			    "maximum_value_warning": "machine_nozzle_size * 10",
+			    "enabled": "resolveOrValue('retraction_combing') != 'off'",
+			    "settable_per_mesh": false,
+			    "settable_per_extruder": true
+			},
                         "travel_retract_before_outer_wall": {
                             "label": "Retract Before Outer Wall",
                             "description": "Always retract when moving to start an outer wall.",
