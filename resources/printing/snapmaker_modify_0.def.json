@@ -6,7 +6,7 @@
         "type": "machine",
         "author": "Snapmaker",
         "manufacturer": "Snapmaker",
-        "setting_version": 0.14,
+        "setting_version": 0.15,
         "file_formats": "text/x-gcode;application/x-stl-ascii;application/x-stl-binary;application/x-wavefront-obj;application/x3g",
         "visible": false,
         "has_materials": true,
@@ -7923,16 +7923,6 @@
                             "visible": "false",
                             "min": 0,
                             "max": 20000
-                        },
-                        "infill_randomize_start_location": {
-                            "label": "Randomize Infill Start",
-                            "description": "Randomize which infill line is printed first. This prevents one segment becoming the strongest, but it does so at the cost of an additional travel move.",
-                            "type": "bool",
-                            "default_value": false,
-                            "warning_value": "True if infill_pattern not in (grid', 'triangles', 'trihexagon', 'cubic', 'cubicsubdiv', 'tetrahedral', 'quarter_cubic) else None",
-                            "limit_to_extruder": "infill_extruder_nr",
-                            "settable_per_mesh": true,
-                            "visible": "false"
                         },
                         "sub_div_rad_add": {
                             "label": "Cubic Subdivision Shell",

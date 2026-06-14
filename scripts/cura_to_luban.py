@@ -6,6 +6,10 @@ import json
 import argparse
 
 class ConvertPythonToJS(ast.NodeVisitor):
+    def __init__(self):
+        super().__init__()
+        self.in_call = False  # Track if we are inside a function argument context
+
     def visit_Expression(self, node):
         return self.visit(node.body)
 
@@ -31,7 +35,6 @@ class ConvertPythonToJS(ast.NodeVisitor):
 
     def visit_Compare(self, node):
         left = self.visit(node.left)
-
         op = node.ops[0]
         right = self.visit(node.comparators[0])
 
@@ -64,14 +67,24 @@ class ConvertPythonToJS(ast.NodeVisitor):
 
     def visit_Constant(self, node):
         if isinstance(node.value, str):
+            # Generic rule: if we are inside any function call, strip the quotes entirely.
+            # Luban's JS interpreter wants variables, not strings
+            if self.in_call:
+                return str(node.value)
+
             escaped_str = node.value.replace("'", "\\'")
             return f"'{escaped_str}'"
-        if isinstance(node.value, (int, float)):
-            # Force high-precision fixed point, then trim unnecessary trailing zeros
-            formatted = node.value.rstrip('0')
+
+        # Explicit formatting prevents scientific notation AND preserves leading/trailing zero structure
+        if isinstance(node.value, float):
+            formatted = f"{node.value:.10f}".rstrip('0')
             if formatted.endswith('.'):
-                formatted = formatted[:-1]
+                formatted += '0'
             return formatted
+
+        if isinstance(node.value, int):
+            return str(node.value)
+
         return json.dumps(node.value)
 
     def visit_List(self, node):
@@ -86,14 +99,27 @@ class ConvertPythonToJS(ast.NodeVisitor):
 
     def visit_Call(self, node):
         func = self.visit(node.func)
+
+        # Save previous state, then mark that we are entering a function call
+        old_in_call = self.in_call
+        self.in_call = True
+
         args = [self.visit(arg) for arg in node.args]
+
+        # Restore previous state upon exiting the call
+        self.in_call = old_in_call
+
         return f"{func}({', '.join(args)})"
 
 def translate_expression(val):
     if val.isdigit() or val in ["true", "false", "True", "False"]:
         return "true" if val == "True" else "false" if val == "False" else val
     try:
-        tree = ast.parse(val, mode='eval')
+        # Normalize JS syntax back into standard Python format so ast.parse can read it on re-runs
+        sanitized = val.replace(" && ", " and ").replace(" || ", " or ")
+        sanitized = sanitized.replace(" === ", " == ").replace(" !== ", " != ")
+
+        tree = ast.parse(sanitized, mode='eval')
         return ConvertPythonToJS().visit(tree)
     except Exception:
         return val
@@ -146,4 +172,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
