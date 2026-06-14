@@ -57,6 +57,15 @@
                             "settable_per_extruder": false,
                             "settable_per_meshgroup": false
                         },
+                        "machine_start_gcode_first": {
+                            "label": "Start GCode must be first",
+                            "description": "This setting controls if the start-gcode is forced to always be the first g-code. Without this option other g-code, such as a T0 can be inserted before the start g-code.",
+                            "type": "bool",
+                            "default_value": false,
+                            "settable_per_mesh": false,
+                            "settable_per_extruder": false,
+                            "settable_per_meshgroup": false
+                        },
                         "machine_end_gcode": {
                             "label": "End G-code",
                             "description": "G-code commands to be executed at the very end - separated by \\n.",
@@ -98,7 +107,7 @@
                             "minimum_value": "0.0001",
                             "minimum_value_warning": "0.4",
                             "maximum_value_warning": "3.5",
-                            "visible": "machine_gcode_flavor != 'UltiGCode'",
+                            "visible": "(machine_gcode_flavor !== 'UltiGCode')",
                             "settable_per_mesh": false,
                             "settable_per_extruder": true,
                             "min": 0,
@@ -310,7 +319,7 @@
                             "default_value": 0,
                             "minimum_value": "0",
                             "type": "float",
-                            "enabled": "machine_extruders_share_nozzle",
+                            "visible": "machine_extruders_share_nozzle",
                             "settable_per_mesh": false,
                             "settable_per_extruder": true,
                             "settable_per_meshgroup": false
@@ -844,7 +853,7 @@
                             "settable_per_extruder": false,
                             "settable_per_meshgroup": true,
                             "settable_globally": true,
-                            "visible": "extruders_enabled_count > 1",
+                            "visible": "(extruders_enabled_count > 1)",
                             "children": {
                                 "wall_0_extruder_nr": {
                                     "label": "Outer Wall Extruder",
@@ -856,7 +865,7 @@
                                     "settable_per_extruder": false,
                                     "settable_per_meshgroup": true,
                                     "settable_globally": true,
-                                    "visible": "extruders_enabled_count > 1"
+                                    "visible": "(extruders_enabled_count > 1)"
                                 },
                                 "wall_x_extruder_nr": {
                                     "label": "Inner Wall Extruder",
@@ -868,7 +877,7 @@
                                     "settable_per_extruder": false,
                                     "settable_per_meshgroup": true,
                                     "settable_globally": true,
-                                    "visible": "extruders_enabled_count > 1"
+                                    "visible": "(extruders_enabled_count > 1)"
                                 }
                             }
                         },
@@ -893,7 +902,7 @@
                             "settable_per_extruder": false,
                             "settable_per_meshgroup": true,
                             "settable_globally": true,
-                            "visible": "extruders_enabled_count > 1"
+                            "visible": "(extruders_enabled_count > 1)"
                         },
                         "infill_extruder_nr": {
                             "label": "Infill Extruder",
@@ -904,7 +913,7 @@
                             "settable_per_extruder": false,
                             "settable_per_meshgroup": true,
                             "settable_globally": true,
-                            "visible": "extruders_enabled_count > 1"
+                            "visible": "(extruders_enabled_count > 1)"
                         },
                         "support_extruder_nr": {
                             "label": "Support Extruder",
@@ -1141,7 +1150,7 @@
                             "unit": "°C",
                             "type": "float",
                             "default_value": 200,
-                            "calcu_value": "Math.max(-273.15, material_print_temperature - 5)",
+                            "calcu_value": "Math.max(-(273.15), (material_print_temperature - 5))",
                             "minimum_value": "Math.max(0, material_print_temperature - 10)",
                             "maximum_value": "machine_maximum_print_temperature",
                             "step": "0.1",
@@ -1160,7 +1169,7 @@
                             "unit": "°C",
                             "type": "float",
                             "default_value": 195,
-                            "calcu_value": "Math.max(-273.15, material_print_temperature - 5)",
+                            "calcu_value": "Math.max(-(273.15), (material_print_temperature - 5))",
                             "minimum_value": "Math.max(0, material_print_temperature - 15)",
                             "maximum_value": "machine_maximum_print_temperature",
                             "step": "0.1",
@@ -1269,7 +1278,7 @@
                                     "maximum_value": "100",
                                     "calcu_value": "cool_fan_speed",
                                     "default_value": 100,
-                                    "visible": "cool_fan_speed > 0",
+                                    "visible": "(cool_fan_speed > 0)",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": true,
                                     "filter": [
@@ -1286,7 +1295,7 @@
                                     "minimum_value": "Math.max(0, cool_fan_speed_min)",
                                     "maximum_value": "100",
                                     "default_value": 100,
-                                    "visible": "cool_fan_speed > 0",
+                                    "visible": "(cool_fan_speed > 0)",
                                     "calcu_value": "cool_fan_speed",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": true,
@@ -1302,7 +1311,7 @@
                                     "unit": "s",
                                     "type": "float",
                                     "default_value": 10,
-                                    "visible": "cool_fan_speed > 0",
+                                    "visible": "(cool_fan_speed > 0)",
                                     "maximum_value_warning": "600",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": true,
@@ -1317,7 +1326,7 @@
                                     "description": "The layer at which the fans spin on regular fan speed. If regular fan speed at height is set, this value is calculated and rounded to a whole number.",
                                     "type": "int",
                                     "default_value": 2,
-                                    "visible": "cool_fan_speed > 0",
+                                    "visible": "(cool_fan_speed > 0)",
                                     "minimum_value": "1",
                                     "maximum_value_warning": "10 / (layer_height)",
                                     "settable_per_mesh": false,
@@ -1494,6 +1503,21 @@
                                     ],
                                     "min": 0,
                                     "max": 20000
+                                },
+                                "roofing_expansion": {
+                                    "label": "Top Surface Expansion",
+                                    "description": "Determines how much the top surfaces are expanded beneath overlapping surfaces. By adjusting this value, you can ensure that the outer edges of the top surfaces are concealed by the layers above, resulting in a better visual quality, particularly for models with curved surfaces.",
+                                    "type": "float",
+                                    "default_value": "0",
+                                    "value": "0",
+                                    "minimum_value": "0",
+                                    "maximum_value_warning": "roofing_line_width * 3",
+                                    "visible": "((roofing_layer_count > 0) && (top_layers > 0))",
+                                    "limit_to_extruder": "roofing_extruder_nr",
+                                    "filter": [
+                                        "all"
+                                    ],
+                                    "settable_per_mesh": true
                                 },
                                 "infill_material_flow": {
                                     "label": "Infill Flow",
@@ -1834,7 +1858,7 @@
                             "default_value": 20,
                             "minimum_value": "0.1",
                             "minimum_value_warning": "1",
-                            "maximum_value": "machine_max_feedrate_e if retraction_enable else Infinity",
+                            "maximum_value": "(retraction_enable ? machine_max_feedrate_e : Infinity)",
                             "maximum_value_warning": "70",
                             "settable_per_mesh": false,
                             "settable_per_extruder": true,
@@ -1853,7 +1877,7 @@
                                     "calcu_value": "switch_extruder_retraction_speeds",
                                     "minimum_value": "0.1",
                                     "minimum_value_warning": "1",
-                                    "maximum_value": "machine_max_feedrate_e if retraction_enable else Infinity",
+                                    "maximum_value": "(retraction_enable ? machine_max_feedrate_e : Infinity)",
                                     "maximum_value_warning": "70",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": true,
@@ -1873,7 +1897,7 @@
                                     "calcu_value": "switch_extruder_retraction_speeds",
                                     "minimum_value": "0.1",
                                     "minimum_value_warning": "1",
-                                    "maximum_value": "machine_max_feedrate_e if retraction_enable else Infinity",
+                                    "maximum_value": "(retraction_enable ? machine_max_feedrate_e : Infinity)",
                                     "maximum_value_warning": "70",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": true,
@@ -1981,7 +2005,7 @@
                                     "minimum_value": "0.0001",
                                     "minimum_value_warning": "50",
                                     "maximum_value_warning": "150",
-                                    "visible": "bottom_layers > 0",
+                                    "visible": "(bottom_layers > 0)",
                                     "limit_to_extruder": "top_bottom_extruder_nr",
                                     "settable_per_mesh": false
                                 }
@@ -2093,7 +2117,7 @@
                             "maximum_value_warning": "120",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false,
-                            "resolve": "max(extruderValues(\"material_shrinkage_percentage\")) if any(extruderValues('material_is_support_material')) else sum(extruderValues(\"material_shrinkage_percentage\")) / len(extruderValues(\"material_shrinkage_percentage\"))",
+                            "resolve": "(any(extruderValues('material_is_support_material')) ? max(extruderValues('material_shrinkage_percentage')) : (sum(extruderValues('material_shrinkage_percentage')) / len(extruderValues('material_shrinkage_percentage'))))",
                             "min": 0,
                             "max": 20000
                         },
@@ -2151,7 +2175,7 @@
                             "maximum_value_warning": "0",
                             "settable_per_mesh": false,
                             "settable_per_extruder": true,
-                            "min": "-retraction_amount * 4",
+                            "min": "(-(retraction_amount) * 4)",
                             "max": 0
                         },
                         "material_break_preparation_speed": {
@@ -2342,7 +2366,7 @@
                                     "maximum_value_warning": "0.75 * machine_nozzle_size",
                                     "maximum_value": "(layer_height) * 8 if infill_line_distance > 0 else 999999",
                                     "calcu_value": "resolveOrValue(layer_height)",
-                                    "visible": "infill_sparse_density > 0",
+                                    "visible": "(infill_sparse_density > 0)",
                                     "limit_to_extruder": "infill_extruder_nr",
                                     "settable_per_mesh": true,
                                     "min": 0.01,
@@ -2354,7 +2378,7 @@
                                     "unit": "mm",
                                     "type": "float",
                                     "default_value": 0.1,
-                                    "minimum_value": "(layer_height)",
+                                    "minimum_value": "layer_height",
                                     "maximum_value_warning": "0.75 * machine_nozzle_size",
                                     "maximum_value": "(layer_height) * 8",
                                     "calcu_value": "resolveOrValue(layer_height)",
@@ -2470,7 +2494,7 @@
                                     "default_value": 0.4,
                                     "type": "float",
                                     "calcu_value": "line_width",
-                                    "visible": "infill_sparse_density > 0",
+                                    "visible": "(infill_sparse_density > 0)",
                                     "limit_to_extruder": "infill_extruder_nr",
                                     "settable_per_mesh": true,
                                     "filter": [
@@ -2608,7 +2632,7 @@
                                     "maximum_value_warning": "150",
                                     "default_value": 60,
                                     "calcu_value": "speed_print",
-                                    "visible": "infill_sparse_density > 0",
+                                    "visible": "(infill_sparse_density > 0)",
                                     "limit_to_extruder": "infill_extruder_nr",
                                     "settable_per_mesh": true,
                                     "filter": [
@@ -2626,7 +2650,7 @@
                                     "maximum_value": "Math.sqrt(machine_max_feedrate_x ** 2 + machine_max_feedrate_y ** 2)",
                                     "maximum_value_warning": "150",
                                     "default_value": 30,
-                                    "calcu_value": "speed_print / 2",
+                                    "calcu_value": "(speed_print / 2)",
                                     "limit_to_extruder": "wall_0_extruder_nr",
                                     "settable_per_mesh": true,
                                     "filter": [
@@ -2694,17 +2718,13 @@
                                     "value": "support_angle",
                                     "settable_per_mesh": true
                                 },
-                                "wall_overhang_speed_factor": {
-                                    "label": "Overhanging Wall Speed",
+                                "wall_overhang_speed_factors": {
+                                    "label": "Overhanging Wall Speeds",
                                     "description": "Overhanging walls will be printed at this percentage of their normal print speed.",
                                     "unit": "%",
-                                    "type": "float",
-                                    "default_value": 100,
-                                    "minimum_value": "0.001",
-                                    "minimum_value_warning": "25",
+                                    "type": "[int]",
+                                    "default_value": "[100]",
                                     "settable_per_mesh": true,
-                                    "min": 0,
-                                    "max": 20000,
                                     "children": {
                                         "wall_overhang_angle": {
                                             "label": "Overhanging Wall Angle",
@@ -2718,7 +2738,6 @@
                                             "settable_per_mesh": true,
                                             "min": 0,
                                             "max": 20000,
-                                            "visible": "wall_overhang_speed_factor < 90",
                                             "filter": [
                                                 "advanced"
                                             ]
@@ -2737,7 +2756,7 @@
                                     "maximum_value": "Math.sqrt(machine_max_feedrate_x ** 2 + machine_max_feedrate_y ** 2)",
                                     "maximum_value_warning": "150",
                                     "default_value": 30,
-                                    "calcu_value": "speed_print / 2",
+                                    "calcu_value": "(speed_print / 2)",
                                     "limit_to_extruder": "top_bottom_extruder_nr",
                                     "visible": "top_layers > 0 || bottom_layers > 0",
                                     "settable_per_mesh": true,
@@ -2833,7 +2852,7 @@
                                     "unit": "mm/s",
                                     "visible": "prime_tower_enable",
                                     "default_value": 60,
-                                    "calcu_value": "speed_print / 2",
+                                    "calcu_value": "(speed_print / 2)",
                                     "minimum_value": "0.1",
                                     "maximum_value": "Math.sqrt(Math.pow(machine_max_feedrate_x, 2) + Math.pow(machine_max_feedrate_y, 2))",
                                     "maximum_value_warning": "150",
@@ -2885,9 +2904,9 @@
                                     "description": "Use a separate acceleration rate for travel moves. If disabled, travel moves will use the acceleration value of the printed line at their destination.",
                                     "type": "bool",
                                     "default_value": false,
-                                    "calcu_value": "(acceleration_enabled)",
+                                    "calcu_value": "acceleration_enabled",
                                     "resolve": "acceleration_travel_enabled",
-                                    "enabled": "acceleration_enabled",
+                                    "visible": "acceleration_enabled",
                                     "visible": "acceleration_enabled",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": false
@@ -2934,8 +2953,8 @@
                                     "minimum_value_warning": "100",
                                     "maximum_value_warning": "10000",
                                     "default_value": 1000,
-                                    "calcu_value": "acceleration_print / 2",
-                                    "visible": "(acceleration_enabled)",
+                                    "calcu_value": "(acceleration_print / 2)",
+                                    "visible": "acceleration_enabled",
                                     "limit_to_extruder": "wall_0_extruder_nr",
                                     "settable_per_mesh": true,
                                     "min": 1,
@@ -2968,7 +2987,7 @@
                                     "maximum_value_warning": "10000",
                                     "default_value": 3000,
                                     "value": "acceleration_wall_0",
-                                    "enabled": "resolveOrValue('acceleration_enabled')",
+                                    "visible": "resolveOrValue('acceleration_enabled')",
                                     "limit_to_extruder": "wall_0_extruder_nr",
                                     "settable_per_mesh": true
                                 },
@@ -2983,7 +3002,7 @@
                                     "maximum_value_warning": "10000",
                                     "default_value": 3000,
                                     "value": "acceleration_wall_x",
-                                    "enabled": "resolveOrValue('acceleration_enabled')",
+                                    "visible": "resolveOrValue('acceleration_enabled')",
                                     "limit_to_extruder": "wall_x_extruder_nr",
                                     "settable_per_mesh": true
                                 },
@@ -3079,7 +3098,7 @@
                                     "minimum_value_warning": "100",
                                     "maximum_value_warning": "10000",
                                     "default_value": 3000,
-                                    "calcu_value": "acceleration_print / 2",
+                                    "calcu_value": "(acceleration_print / 2)",
                                     "visible": "prime_tower_enable && resolveOrValue('acceleration_enabled')",
                                     "settable_per_mesh": false,
                                     "min": 1,
@@ -3235,7 +3254,7 @@
                                     "maximum_value_warning": "top_layers - 1",
                                     "limit_to_extruder": "roofing_extruder_nr",
                                     "settable_per_mesh": false,
-                                    "visible": "top_layers > 0",
+                                    "visible": "(top_layers > 0)",
                                     "filter": [
                                         "advanced",
                                         "strength",
@@ -3251,7 +3270,7 @@
                                     "type": "bool",
                                     "value": true,
                                     "default_value": true,
-                                    "enabled": "roofing_layer_count > 0 and top_layers > 0 and roofing_pattern != 'concentric'",
+                                    "visible": "((roofing_layer_count > 0) && (top_layers > 0) && (roofing_pattern !== 'concentric'))",
                                     "limit_to_extruder": "roofing_extruder_nr",
                                     "settable_per_mesh": false,
                                     "visible": "false"
@@ -3372,12 +3391,12 @@
                         {
                             "label": "Small Top/Bottom Width",
                             "description": "Small top/bottom regions are filled with walls instead of the default top/bottom pattern. This helps to avoids jerky motions. Off for the topmost (air-exposed) layer by default (see 'Small Top/Bottom On Surface').",
-                            "value": "skin_line_width * 2",
+                            "value": "(skin_line_width * 2)",
                             "default_value": 1,
                             "minimum_value": "0",
                             "maximum_value_warning": "skin_line_width * 10",
                             "type": "float",
-                            "enabled": "(top_layers > 0 or bottom_layers > 0) and top_bottom_pattern != 'concentric'",
+                            "visible": "(((top_layers > 0) || (bottom_layers > 0)) && (top_bottom_pattern !== 'concentric'))",
                             "limit_to_extruder": "top_bottom_extruder_nr",
                             "settable_per_mesh": true,
                             "unit": "mm"
@@ -3386,10 +3405,10 @@
                         {
                             "label": "Small Top/Bottom On Surface",
                             "description": "Enable small (up to 'Small Top/Bottom Width') regions on the topmost skinned layer (exposed to air) to be filled with walls instead of the default pattern.",
-                            "value": "False",
+                            "value": "false",
                             "default_value": false,
                             "type": "bool",
-                            "enabled": "small_skin_width > 0 and top_layers > 0",
+                            "visible": "((small_skin_width > 0) && (top_layers > 0))",
                                 "limit_to_extruder": "top_bottom_extruder_nr",
                             "settable_per_mesh": true
                         },
@@ -3420,7 +3439,7 @@
                                     "default_value": 2,
                                     "minimum_value": "0",
                                     "minimum_value_warning": "infill_line_width",
-                                    "calcu_value": "infill_sparse_density === 0 ? 0 : infill_line_width * 100 / infill_sparse_density * (infill_pattern === 'grid' ? 2 : infill_pattern === 'triangles' || infill_pattern === 'trihexagon' || infill_pattern === 'cubic' || infill_pattern === 'cubicsubdiv' ? 3 : infill_pattern === 'tetrahedral' || infill_pattern === 'quarter_cubic' ? 2 : infill_pattern === 'cross' || infill_pattern === 'cross_3d' ? 1 : 1)",
+                                    "calcu_value": "infill_sparse_density === 0 ? 0 : infill_line_width * 100 / infill_sparse_density * (infill_pattern === 'grid' ? 2 : infill_pattern === 'triangles' || infill_pattern === 'trihexagon' || infill_pattern === 'cubic' || infill_pattern === 'cubicsubdiv' ? 3 : infill_pattern === 'tetrahedral' || infill_pattern === 'quarter_cubic' ? 2 : infill_pattern === 'cross' || infill_pattern === 'cross_3d' ? 1 : infill_pattern === 'lightning' ? 1.6 : infill_pattern === 'octagon' || infill_pattern === 'honeycomb' ? ((4/3) - (1/3) * (infill_sparse_density / 100.0)) : 1)",
                                     "limit_to_extruder": "infill_extruder_nr",
                                     "settable_per_mesh": false,
                                     "visible": "infill_sparse_density !== 100 && model_structure_type === 'normal'",
@@ -3464,28 +3483,15 @@
                                 "cross": "Cross",
                                 "cross_3d": "Cross 3D",
                                 "gyroid": "Gyroid",
-                                "lightning": "Lightning"
+                                "lightning": "Lightning",
+                                "honeycomb": "Honeycomb",
+                                "octagon": "Octagon"
                             },
                             "default_value": "grid",
                             "visible": "infill_sparse_density > 0 && infill_sparse_density !== 100 && model_structure_type === 'normal'",
                             "limit_to_extruder": "infill_extruder_nr",
                             "settable_per_mesh": false,
                             "children": {
-                                "extra_infill_lines_to_support_skins":
-                                {
-                                    "label": "Extra Infill Lines To Support Skins",
-                                    "description": "Add extra lines into the infill pattern to support skins above.   This option prevents holes or plastic blobs that sometime show in complex shaped skins due to the infill below not correctly supporting the skin layer being printed above.  'Walls' supports just the outlines of the skin, whereas 'Walls and Lines' also supports the ends of the lines that make up the skin.",
-                                    "type": "enum",
-                                    "options":
-                                    {
-                                        "walls_and_lines": "Walls and Lines",
-                                        "walls": "Walls Only",
-                                        "none": "None"
-                                    },
-                                    "default_value": "none",
-                                    "value": "'none' if infill_sparse_density > 50 else 'walls' if skin_edge_support_thickness > 0 else 'walls_and_lines'",
-                                    "enabled": "infill_sparse_density > 0 and infill_pattern not in ('lightning', 'concentric', 'cross','cross_3d') and wall_line_count > 0 and top_layers > 0"
-                                },
                                 "lightning_infill_support_angle": {
                                     "label": "Lightning Infill Support Angle",
                                     "description": "Determines when a lightning infill layer has to support anything above it. Measured in the angle given the thickness of a layer.",
@@ -3496,7 +3502,7 @@
                                     "maximum_value_warning": "75",
                                     "default_value": 40,
                                     "limit_to_extruder": "infill_extruder_nr",
-                                    "enabled": "infill_pattern === 'lightning'",
+                                    "visible": "infill_pattern === 'lightning'",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": false,
                                     "visible": "infill_pattern === 'lightning'",
@@ -3516,7 +3522,7 @@
                                     "maximum_value_warning": "75",
                                     "default_value": 40,
                                     "limit_to_extruder": "infill_extruder_nr",
-                                    "enabled": "infill_pattern === 'lightning'",
+                                    "visible": "infill_pattern === 'lightning'",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": false,
                                     "value": "lightning_infill_support_angle",
@@ -3537,7 +3543,7 @@
                                     "maximum_value_warning": "75",
                                     "default_value": 40,
                                     "limit_to_extruder": "infill_extruder_nr",
-                                    "enabled": "infill_pattern === 'lightning'",
+                                    "visible": "infill_pattern === 'lightning'",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": false,
                                     "value": "lightning_infill_support_angle",
@@ -3558,7 +3564,7 @@
                                     "maximum_value_warning": "75",
                                     "default_value": 40,
                                     "limit_to_extruder": "infill_extruder_nr",
-                                    "enabled": "infill_pattern === 'lightning'",
+                                    "visible": "infill_pattern === 'lightning'",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": false,
                                     "value": "lightning_infill_support_angle",
@@ -3660,19 +3666,6 @@
                                     "min": 0,
                                     "max": 20000
                                 },
-                                "support_tree_branch_distance": {
-                                    "label": "Tree Support Branch Distance",
-                                    "description": "How far apart the branches need to be when they touch the model. Making this distance small will cause the tree support to touch the model at more points, causing better overhang but making support harder to remove.",
-                                    "unit": "mm",
-                                    "type": "float",
-                                    "minimum_value": "0.001",
-                                    "default_value": 1,
-                                    "limit_to_extruder": "support_infill_extruder_nr",
-                                    "visible": "support_enable && support_structure === 'tree'",
-                                    "settable_per_mesh": false,
-                                    "min": 0,
-                                    "max": 20000
-                                },
                                 "support_tree_branch_diameter": {
                                     "label": "Tree Support Branch Diameter",
                                     "description": "The diameter of the thinnest branches of tree support. Thicker branches are more sturdy. Branches towards the base will be thicker than this.",
@@ -3715,9 +3708,9 @@
                                     "maximum_value": "support_tree_angle",
                                     "maximum_value_warning": "support_tree_angle-1",
                                     "default_value": 50,
-                                    "value": "support_tree_angle * 2 / 3",
+                                    "value": "((support_tree_angle * 2) / 3)",
                                     "limit_to_extruder": "support_infill_extruder_nr",
-                                    "enabled": "support_enable and support_structure=='tree'",
+                                    "visible": "(support_enable && (support_structure === 'tree'))",
                                     "settable_per_mesh": true,
                                     "settable_per_extruder": true
                                 },
@@ -3730,9 +3723,9 @@
                                     "minimum_value": "min_wall_line_width",
                                     "maximum_value": "support_tree_branch_diameter",
                                     "default_value": 0.4,
-                                    "value": "support_line_width * 2",
+                                    "value": "(support_line_width * 2)",
                                     "limit_to_extruder": "support_infill_extruder_nr",
-                                    "enabled": "support_enable and support_structure=='tree'",
+                                    "visible": "(support_enable && (support_structure === 'tree'))",
                                     "settable_per_mesh": true,
                                     "settable_per_extruder": true
                                 },
@@ -3745,7 +3738,7 @@
                                     "minimum_value": "0",
                                     "default_value": 1,
                                     "limit_to_extruder": "support_infill_extruder_nr",
-                                    "enabled": "support_enable and support_structure=='tree' and resolveOrValue('support_type') == 'everywhere' ",
+                                    "visible": "(support_enable && (support_structure === 'tree') && (resolveOrValue('support_type') === 'everywhere'))",
                                     "settable_per_mesh": true,
                                     "settable_per_extruder": true
                                 },
@@ -3759,7 +3752,7 @@
                                     "maximum_value_warning": "5",
                                     "default_value": 3,
                                     "limit_to_extruder": "support_infill_extruder_nr",
-                                    "enabled": "support_enable and support_structure=='tree' and resolveOrValue('support_type') == 'everywhere' ",
+                                    "visible": "(support_enable && (support_structure === 'tree') && (resolveOrValue('support_type') === 'everywhere'))",
                                     "settable_per_mesh": true,
                                     "settable_per_extruder": true
                                 },
@@ -3774,9 +3767,9 @@
                                         "graceful": "On model if required"
                                     },
                                     "default_value": "buildplate",
-                                    "value": "'buildplate' if support_type == 'buildplate' else 'graceful'",
-                                    "resolve": "'buildplate' if 'buildplate' in extruderValues('support_tree_rest_preference') else 'graceful'",
-                                    "enabled": "support_enable and support_structure=='tree' and support_type == 'everywhere'",
+                                    "value": "((support_type === 'buildplate') ? 'buildplate' : 'graceful')",
+                                    "resolve": "(extruderValues('support_tree_rest_preference').includes('buildplate') ? 'buildplate' : 'graceful')",
+                                    "visible": "(support_enable && (support_structure === 'tree') && (support_type === 'everywhere'))",
                                     "settable_per_mesh": true
                                 },
                                 "support_tree_bp_diameter":
@@ -3789,7 +3782,7 @@
                                     "maximum_value_warning": "20",
                                     "default_value": 7.5,
                                     "limit_to_extruder": "support_infill_extruder_nr",
-                                    "enabled": "support_enable and support_structure=='tree'",
+                                    "visible": "(support_enable && (support_structure === 'tree'))",
                                     "settable_per_mesh": true,
                                     "settable_per_extruder": true
                                 },
@@ -3803,8 +3796,8 @@
                                     "minimum_value_warning": "5",
                                     "maximum_value_warning": "35",
                                     "default_value": 15,
-                                    "value": "30 if support_roof_enable else 10",
-                                    "enabled": "support_enable and support_structure=='tree'",
+                                    "value": "(support_roof_enable ? 30 : 10)",
+                                    "visible": "(support_enable && (support_structure === 'tree'))",
                                     "limit_to_extruder": "support_infill_extruder_nr",
                                     "settable_per_mesh": true,
                                     "settable_per_extruder": true
@@ -3815,7 +3808,7 @@
                                     "description": "Limit how far each branch should travel from the point it supports. This can make the support more sturdy, but will increase the amount of branches (and because of that material usage/print time)",
                                     "type": "bool",
                                     "default_value": true,
-                                    "enabled": "support_enable and support_structure=='tree'",
+                                    "visible": "(support_enable && (support_structure === 'tree'))",
                                     "settable_per_mesh": true
                                 },
                                 "support_tree_branch_reach_limit":
@@ -3827,25 +3820,8 @@
                                     "minimum_value": "1",
                                     "minimum_value_warning": "10",
                                     "default_value": 30,
-                                    "enabled": "support_enable and support_tree_limit_branch_reach and support_structure=='tree'",
+                                    "visible": "(support_enable && support_tree_limit_branch_reach && (support_structure === 'tree'))",
                                     "settable_per_mesh": true
-                                },
-                                "support_tree_collision_resolution": {
-                                    "label": "Tree Support Collision Resolution",
-                                    "description": "Resolution to compute collisions with to avoid hitting the model. Setting this lower will produce more accurate trees that fail less often, but increases slicing time dramatically.",
-                                    "unit": "mm",
-                                    "type": "float",
-                                    "minimum_value": "0.001",
-                                    "minimum_value_warning": "support_line_width / 4",
-                                    "maximum_value_warning": "support_line_width * 2",
-                                    "default_value": 0.4,
-                                    "calcu_value": "support_line_width / 2",
-                                    "limit_to_extruder": "support_infill_extruder_nr",
-                                    "visible": "support_enable && support_structure === 'tree' && support_tree_branch_diameter_angle > 0",
-                                    "settable_per_mesh": false,
-                                    "settable_per_extruder": false,
-                                    "min": 0,
-                                    "max": 20000
                                 }
                             }
                         },
@@ -3890,7 +3866,9 @@
                                 "concentric": "Concentric",
                                 "zigzag": "Zig Zag",
                                 "cross": "Cross",
-                                "gyroid": "Gyroid"
+                                "gyroid": "Gyroid",
+                                "honeycomb": "Honeycomb",
+                                "octagon": "Octagon"
                             },
                             "default_value": "zigzag",
                             "visible": "support_enable || support_meshes_present",
@@ -3925,8 +3903,8 @@
                                     "description": "Connect the ends of the support lines together. Enabling this setting can make your support more sturdy and reduce underextrusion, but it will cost more material.",
                                     "type": "bool",
                                     "default_value": false,
-                                    "calcu_value": "support_pattern === 'cross' || support_pattern === 'gyroid'",
-                                    "visible": "(support_enable || support_meshes_present) && (support_pattern === 'lines' || support_pattern === 'grid' || support_pattern === 'triangles' || support_pattern === 'cross' || support_pattern === 'gyroid')",
+                                    "calcu_value": "support_pattern == 'cross' || support_pattern == 'gyroid' || support_pattern == 'honeycomb' || support_pattern == 'octagon'",
+                                    "visible": "(support_enable || support_meshes_present) && (support_pattern === 'lines' || support_pattern === 'grid' || support_pattern === 'triangles' || support_pattern === 'cross' || support_pattern === 'gyroid' || support_pattern == 'honeycomb' || support_pattern == 'octagon')",
                                     "limit_to_extruder": "support_infill_extruder_nr",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": false
@@ -4003,7 +3981,7 @@
                             "description": "Manage the spatial relationship between the z seam of the support structure and the actual 3D model. This control is crucial as it allows users to ensure the seamless removal of support structures post-printing, without inflicting damage or leaving marks on the printed model.",
                             "type": "bool",
                             "default_value": true,
-                            "enabled": "support_enable",
+                            "visible": "support_enable",
                             "settable_per_mesh": false,
                             "settable_per_extruder": true,
                             "settable_per_meshgroup": false,
@@ -4015,11 +3993,11 @@
                                     "description": "The distance between the model and its support structure at the z-axis seam.",
                                     "unit": "mm",
                                     "minimum_value": "0.001",
-                                    "value": "line_width * 2",
+                                    "value": "(line_width * 2)",
                                     "default_value": 0.8,
                                     "maximum_value_warning": "line_width * 4",
                                     "type": "float",
-                                    "enabled": "support_z_seam_away_from_model and support_enable",
+                                    "visible": "(support_z_seam_away_from_model && support_enable)",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": true
                                 }
@@ -4034,7 +4012,7 @@
                                 "everywhere": "Everywhere"
                             },
                             "default_value": "everywhere",
-                            "resolve": "'everywhere' if 'everywhere' in 'support_type' else 'buildplate'",
+                            "resolve": "('support_type'.includes('everywhere') ? 'everywhere' : 'buildplate')",
                             "visible": "support_enable",
                             "limit_to_extruder": "support_extruder_nr",
                             "settable_per_mesh": false,
@@ -4173,7 +4151,7 @@
                                     "minimum_value_warning": "support_xy_distance - support_line_width * 2",
                                     "maximum_value_warning": "support_xy_distance",
                                     "default_value": 0.2,
-                                    "calcu_value": "line_width / 2",
+                                    "calcu_value": "(line_width / 2)",
                                     "limit_to_extruder": "support_infill_extruder_nr",
                                     "visible": "support_xy_overrides_z === 'z_overrides_xy'",
                                     "settable_per_mesh": false,
@@ -4597,7 +4575,7 @@
                                     },
                                     "default_value": "interface_area_overwrite_support_area",
                                     "settable_per_extruder": false,
-                                    "enabled": "support_enable and support_structure=='tree' and support_roof_enable",
+                                    "visible": "(support_enable && (support_structure === 'tree') && support_roof_enable)",
                                     "settable_per_mesh": false
                                 },
                                 "support_interface_angles": {
@@ -4654,8 +4632,8 @@
                             "filter": [
                                 "advanced"
                             ],
-                            "min": "-1 * machine_nozzle_size",
-                            "max": "10 * machine_nozzle_size"
+                            "min": "(-(1) * machine_nozzle_size)",
+                            "max": "(10 * machine_nozzle_size)"
                         },
                         "support_use_towers": {
                             "label": "Use Towers",
@@ -4762,7 +4740,7 @@
                                             "default_value": 20,
                                             "minimum_value": "0",
                                             "maximum_value_warning": "50 / skirt_brim_line_width",
-                                            "calcu_value": "Math.ceil(support_brim_width / (skirt_brim_line_width * initial_layer_line_width_factor / 100.0))",
+                                            "calcu_value": "Math.ceil((support_brim_width / ((skirt_brim_line_width * initial_layer_line_width_factor) / 100.0)))",
                                             "visible": "(support_enable || support_meshes_present) && support_brim_enable",
                                             "settable_per_mesh": false,
                                             "settable_per_extruder": false,
@@ -4842,7 +4820,7 @@
                             "type": "int",
                             "minimum_value": "1",
                             "default_value": 1,
-                            "enabled": "support_enable or support_meshes_present",
+                            "visible": "(support_enable || support_meshes_present)",
                             "limit_to_extruder": "support_extruder_nr_layer_0",
                             "settable_per_mesh": false,
                             "settable_per_extruder": true
@@ -4915,8 +4893,8 @@
                                     "value": "1",
                                     "minimum_value": "1",
                                     "maximum_value_warning": "10",
-                                    "maximum_value": "machine_height / layer_height",
-                                    "enabled": "resolveOrValue('adhesion_type') == 'skirt'",
+                                    "maximum_value": "(machine_height / layer_height)",
+                                    "visible": "(resolveOrValue('adhesion_type') === 'skirt')",
                                     "limit_to_extruder": "skirt_brim_extruder_nr",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": true
@@ -5030,7 +5008,7 @@
                                     "label": "Smart Brim",
                                     "description": "Swap print order of the innermost and second innermost brim lines. This improves brim removal.",
                                     "type": "bool",
-                                    "enabled": "resolveOrValue('adhesion_type') == 'brim'",
+                                    "visible": "(resolveOrValue('adhesion_type') === 'brim')",
                                     "default_value": true,
                                     "limit_to_extruder": "skirt_brim_extruder_nr",
                                     "settable_per_mesh": false,
@@ -5060,7 +5038,7 @@
                                             "default_value": 15,
                                             "minimum_value_warning": "raft_interface_line_width",
                                             "maximum_value_warning": "min(raft_interface_margin, 20)",
-                                            "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                                            "visible": "(resolveOrValue('adhesion_type') === 'raft')",
                                             "limit_to_extruder": "raft_base_extruder_nr",
                                             "settable_per_mesh": false,
                                             "settable_per_extruder": true
@@ -5075,7 +5053,7 @@
                                             "default_value": 15,
                                             "minimum_value_warning": "raft_interface_line_width",
                                             "maximum_value_warning": "min(raft_surface_margin, 20)",
-                                            "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                                            "visible": "(resolveOrValue('adhesion_type') === 'raft')",
                                             "limit_to_extruder": "raft_interface_extruder_nr",
                                             "settable_per_mesh": false,
                                             "settable_per_extruder": true
@@ -5090,7 +5068,7 @@
                                             "default_value": 15,
                                             "minimum_value_warning": "raft_interface_line_width",
                                             "maximum_value_warning": "20",
-                                            "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                                            "visible": "(resolveOrValue('adhesion_type') === 'raft')",
                                             "limit_to_extruder": "raft_surface_extruder_nr",
                                             "settable_per_mesh": false,
                                             "settable_per_extruder": true
@@ -5160,7 +5138,7 @@
                                     "unit": "mm/s",
                                     "type": "float",
                                     "default_value": 60,
-                                    "calcu_value": "speed_layer_0 * 1.5",
+                                    "calcu_value": "(speed_layer_0 * 1.5)",
                                     "minimum_value": "0.1",
                                     "maximum_value": "Math.sqrt(machine_max_feedrate_x ** 2 + machine_max_feedrate_y ** 2)",
                                     "maximum_value_warning": "300",
@@ -5297,7 +5275,7 @@
                     "type": "category",
                     "icon": "category_dual",
                     "description": "Settings used for printing with multiple extruders.",
-                    "visible": "extruders_enabled_count > 1",
+                    "visible": "(extruders_enabled_count > 1)",
                     "children": {
                         "dual_helper_type": {
                             "label": "Dual Extrusion Helper Type",
@@ -5309,7 +5287,7 @@
                                 "both": "Prime Tower & Ooze Shield",
                                 "none": "None"
                             },
-                            "visible": "extruders_enabled_count > 1",
+                            "visible": "(extruders_enabled_count > 1)",
                             "default_value": "none",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false,
@@ -5325,7 +5303,7 @@
                             "type": "bool",
                             "visible": "false",
                             "default_value": false,
-                            "resolve": "(extruders_enabled_count > 1) and any(prime_tower_enable)",
+                            "resolve": "((extruders_enabled_count > 1) && any(prime_tower_enable))",
                             "calcu_value": "dual_helper_type === 'prime_tower' || dual_helper_type === 'both' ",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false,
@@ -5407,7 +5385,7 @@
                             "default_value": 0.4,
                             "minimum_value": "max(extruderValues('prime_tower_line_width'))",
                             "maximum_value_warning": "10.0",
-                            "enabled": "prime_tower_enable and resolveOrValue('prime_tower_mode') == 'interleaved'",
+                            "visible": "(prime_tower_enable && (resolveOrValue('prime_tower_mode') === 'interleaved'))",
                             "resolve": "max(extruderValues('prime_tower_line_width'))",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false
@@ -5453,7 +5431,7 @@
                             ]
                         },
                         "prime_tower_brim_enable": {
-                            "value": "resolveOrValue('adhesion_type') in ['raft', 'brim']",
+                            "value": "['raft', 'brim'].includes(resolveOrValue('adhesion_type'))",
                             "label": "Prime Tower Base",
                             "description": "By enabling this setting, your prime-tower will get a brim, even if the model doesn't. If you want a sturdier base for a high tower, you can increase the base height.",
                             "type": "bool",
@@ -5468,12 +5446,12 @@
                         },
                         "prime_tower_base_size":
                         {
-                            "value": "resolveOrValue('raft_margin') if resolveOrValue('adhesion_type') == 'raft' else resolveOrValue('brim_width')",
+                            "value": "((resolveOrValue('adhesion_type') === 'raft') ? resolveOrValue('raft_margin') : resolveOrValue('brim_width'))",
                             "label": "Prime Tower Base Size",
                             "description": "The width of the prime tower brim/base. A larger base enhances adhesion to the build plate, but also reduces the effective print area.",
                             "type": "float",
                             "unit": "mm",
-                            "enabled": "resolveOrValue('prime_tower_enable') and (resolveOrValue('prime_tower_brim_enable') or resolveOrValue('adhesion_type') == 'raft')",
+                            "visible": "(resolveOrValue('prime_tower_enable') && (resolveOrValue('prime_tower_brim_enable') || (resolveOrValue('adhesion_type') === 'raft')))",
                             "default_value": "resolveOrValue('brim_width')",
                             "minimum_value": "0",
                             "maximum_value": "min(0.5 * machine_width, 0.5 * machine_depth)",
@@ -5487,7 +5465,7 @@
                             "description": "The height of the prime tower base. Increasing this value will result in a more sturdy prime tower because the base will be wider. If this setting is too low, the prime tower will not have a sturdy base.",
                             "type": "float",
                             "unit": "mm",
-                            "enabled": "resolveOrValue('prime_tower_enable') and (resolveOrValue('prime_tower_brim_enable') or resolveOrValue('adhesion_type') == 'raft')",
+                            "visible": "(resolveOrValue('prime_tower_enable') && (resolveOrValue('prime_tower_brim_enable') || (resolveOrValue('adhesion_type') === 'raft')))",
                             "default_value": 0,
                             "minimum_value": "0",
                             "maximum_value": "machine_height",
@@ -5499,7 +5477,7 @@
                             "label": "Prime Tower Base Slope",
                             "description": "The magnitude factor used for the slope of the prime tower base. If you increase this value, the base will become slimmer. If you decrease it, the base will become thicker.",
                             "type": "float",
-                            "enabled": "resolveOrValue('prime_tower_enable') and (resolveOrValue('prime_tower_brim_enable') or resolveOrValue('adhesion_type') == 'raft')",
+                            "visible": "(resolveOrValue('prime_tower_enable') && (resolveOrValue('prime_tower_brim_enable') || (resolveOrValue('adhesion_type') === 'raft')))",
                             "default_value": 4,
                             "minimum_value": "0",
                             "maximum_value": "10",
@@ -5517,7 +5495,7 @@
                             "minimum_value": "0",
                             "minimum_value_warning": "raft_base_line_width",
                             "maximum_value_warning": "100",
-                            "enabled": "resolveOrValue('prime_tower_enable') and resolveOrValue('adhesion_type') == 'raft'",
+                            "visible": "(resolveOrValue('prime_tower_enable') && (resolveOrValue('adhesion_type') === 'raft'))",
                             "settable_per_mesh": false,
                             "settable_per_extruder": true,
                             "limit_to_extruder": "raft_base_extruder_nr"
@@ -5563,7 +5541,7 @@
                             "description": "Distance of the ooze shield from the print, in the X/Y directions.",
                             "type": "float",
                             "unit": "mm",
-                            "visible": "(ooze_shield_enabled)",
+                            "visible": "ooze_shield_enabled",
                             "default_value": 2,
                             "resolve": "Math.max(ooze_shield_dist)",
                             "minimum_value": "0",
@@ -5583,7 +5561,7 @@
                             "label": "Generate Interlocking Structure",
                             "description": "At the locations where models touch, generate an interlocking beam structure. This improves the adhesion between models, especially models printed in different materials.",
                             "type": "bool",
-                            "visible": "extruders_enabled_count > 1",
+                            "visible": "(extruders_enabled_count > 1)",
                             "default_value": false,
                             "settable_per_mesh": false,
                             "settable_per_extruder": false,
@@ -5600,7 +5578,7 @@
                             "unit": "mm",
                             "visible": "extruders_enabled_count > 1 && interlocking_enable",
                             "default_value": 0.8,
-                            "value": "2 * wall_line_width_0",
+                            "value": "(2 * wall_line_width_0)",
                             "minimum_value": "min_odd_wall_line_width",
                             "maximum_value": "min(0.5 * machine_width, 0.5 * machine_depth)",
                             "maximum_value_warning": "max(extruderValues('wall_line_width_0')) * 6",
@@ -5771,7 +5749,7 @@
                                     "type": "bool",
                                     "default_value": false,
                                     "settable_per_mesh": true,
-                                    "enabled": "z_seam_type == 'back' || z_seam_type == 'shortest'"
+                                    "visible": "z_seam_type == 'back' || z_seam_type == 'shortest'"
                                 },
                                 "z_seam_corner": {
                                     "label": "Seam Corner Preference",
@@ -5802,9 +5780,49 @@
                                     "visible": "z_seam_type === 'back'",
                                     "limit_to_extruder": "wall_0_extruder_nr",
                                     "settable_per_mesh": false
+                                },
+                                "scarf_joint_seam_length": {
+                                    "label": "Scarf Seam Length",
+                                    "description": "Determines the length of the scarf seam, a seam type that should make the Z seam less visible. Must be higher than 0 to be effective.",
+                                    "type": "float",
+                                    "default_value": 0,
+                                    "minimum_value": "0",
+                                    "maximum_value_warning": "50.0",
+                                    "unit": "mm",
+                                    "limit_to_extruder": "wall_0_extruder_nr",
+                                    "settable_per_extruder": true,
+                                    "settable_per_mesh": true
+                                },
+                                "scarf_joint_seam_start_height_ratio": {
+                                    "label": "Scarf Seam Start Height",
+                                    "description": "The ratio of the selected layer height at which the scarf seam will begin. A lower number will result in a larger seam height. Must be lower than 100 to be effective.",
+                                    "type": "float",
+                                    "default_value": 0,
+                                    "minimum_value": 0,
+                                    "maximum_value": 100,
+                                    "unit": "%",
+                                    "limit_to_extruder": "wall_0_extruder_nr",
+                                    "settable_per_extruder": true,
+                                    "settable_per_mesh": true,
+                                    "visible": "(scarf_joint_seam_length > 0)"
+                                },
+                                "scarf_split_distance": {
+                                    "label": "Scarf Seam Step Length",
+                                    "description": "Determines the length of each step in the flow change when extruding along the scarf seam. A smaller distance will result in a more precise but also more complex G-code.",
+                                    "type": "float",
+                                    "default_value": 1,
+                                    "minimum_value": 0.1,
+                                    "maximum_value": 100,
+                                    "maximum_value_warning": "scarf_joint_seam_length",
+                                    "unit": "mm",
+                                    "limit_to_extruder": "wall_0_extruder_nr",
+                                    "settable_per_extruder": true,
+                                    "settable_per_mesh": true,
+                                    "visible": "(scarf_joint_seam_length > 0)"
                                 }
                             }
                         },
+
                         "optimize_wall_printing_order": {
                             "label": "Optimize Wall Printing Order",
                             "description": "Optimize the order in which walls are printed so as to reduce the number of retractions and the distance travelled. Most parts will benefit from this being enabled but some may actually take longer so please compare the print time estimates with and without optimization. First layer is not optimized when choosing brim as build plate adhesion type.",
@@ -5842,7 +5860,7 @@
                             "description": "Print top/bottom lines in an ordering that causes them to always overlap with adjacent lines in a single direction. This takes slightly more time to print, but makes flat surfaces look more consistent.",
                             "type": "bool",
                             "default_value": true,
-                            "enabled": "(top_layers > 0 || bottom_layers > 0) && (top_bottom_pattern !== 'concentric' || top_bottom_pattern_0 !== 'concentric')",
+                            "visible": "(top_layers > 0 || bottom_layers > 0) && (top_bottom_pattern !== 'concentric' || top_bottom_pattern_0 !== 'concentric')",
                             "limit_to_extruder": "top_bottom_extruder_nr",
                             "settable_per_mesh": false,
                             "filter": [
@@ -5881,7 +5899,7 @@
                                     "description": "Print ironing lines in an ordering that causes them to always overlap with adjacent lines in a single direction. This takes slightly more time to print, but makes flat surfaces look more consistent.",
                                     "type": "bool",
                                     "default_value": false,
-                                    "enabled": "ironing_enabled && ironing_pattern !== 'concentric'",
+                                    "visible": "ironing_enabled && ironing_pattern !== 'concentric'",
                                     "visible": "ironing_enabled",
                                     "limit_to_extruder": "top_bottom_extruder_nr",
                                     "settable_per_mesh": false
@@ -5972,7 +5990,7 @@
                                     "type": "float",
                                     "unit": "mm/s",
                                     "default_value": 20,
-                                    "calcu_value": "speed_topbottom * 20 / 30",
+                                    "calcu_value": "((speed_topbottom * 20) / 30)",
                                     "minimum_value": "0.001",
                                     "maximum_value": "Math.sqrt(Math.pow(machine_max_feedrate_x, 2) + Math.pow(machine_max_feedrate_y, 2))",
                                     "maximum_value_warning": "100",
@@ -6104,22 +6122,6 @@
                                         "surface_quality"
                                     ]
                                 },
-                                "bridge_sparse_infill_max_density": {
-                                    "label": "Bridge Sparse Infill Max Density",
-                                    "description": "Maximum density of infill considered to be sparse. Skin over sparse infill is considered to be unsupported and so may be treated as a bridge skin.",
-                                    "unit": "%",
-                                    "type": "float",
-                                    "default_value": 0,
-                                    "minimum_value": "0",
-                                    "visible": "bridge_settings_enabled",
-                                    "settable_per_mesh": true,
-                                    "min": 0,
-                                    "max": 20000,
-                                    "filter": [
-                                        "success",
-                                        "surface_quality"
-                                    ]
-                                },
                                 "bridge_wall_coast": {
                                     "label": "Bridge Wall Coasting",
                                     "description": "This controls the distance the extruder should coast immediately before a bridge wall begins. Coasting before the bridge starts can reduce the pressure in the nozzle and may produce a flatter bridge.",
@@ -6146,7 +6148,7 @@
                                     "maximum_value": "Math.sqrt(Math.pow(machine_max_feedrate_x, 2) + Math.pow(machine_max_feedrate_y, 2))",
                                     "maximum_value_warning": "300",
                                     "default_value": 15,
-                                    "calcu_value": "Math.max(cool_min_speed, speed_wall_0 / 2)",
+                                    "calcu_value": "Math.max(cool_min_speed, (speed_wall_0 / 2))",
                                     "visible": "bridge_settings_enabled",
                                     "settable_per_mesh": true,
                                     "min": 0,
@@ -6183,7 +6185,7 @@
                                     "maximum_value": "Math.sqrt(Math.pow(machine_max_feedrate_x, 2) + Math.pow(machine_max_feedrate_y, 2))",
                                     "maximum_value_warning": "300",
                                     "default_value": 15,
-                                    "calcu_value": "Math.max(cool_min_speed, speed_topbottom / 2)",
+                                    "calcu_value": "Math.max(cool_min_speed, (speed_topbottom / 2))",
                                     "visible": "bridge_settings_enabled",
                                     "settable_per_mesh": true,
                                     "min": 0,
@@ -6504,7 +6506,7 @@
                             "unit": "mm",
                             "type": "float",
                             "default_value": 1.5,
-                            "calcu_value": "line_width * 2",
+                            "calcu_value": "(line_width * 2)",
                             "minimum_value": "0",
                             "minimum_value_warning": "line_width * 1.5",
                             "maximum_value_warning": "10",
@@ -6523,11 +6525,11 @@
 			    "unit": "mm",
 			    "type": "float",
 			    "default_value": 0.6,
-			    "calcu_value": "machine_nozzle_size * 1.5",
+			    "calcu_value": "(machine_nozzle_size * 1.5)",
 			    "minimum_value": "0",
 			    "minimum_value_warning": "machine_nozzle_size * 0.5",
 			    "maximum_value_warning": "machine_nozzle_size * 10",
-			    "enabled": "resolveOrValue('retraction_combing') != 'off'",
+			    "visible": "(resolveOrValue('retraction_combing') !== 'off')",
 			    "settable_per_mesh": false,
 			    "settable_per_extruder": true
 			},
@@ -6604,7 +6606,7 @@
                             "calcu_value": "wall_line_count === 1 ? wall_line_width_0 / 4 : wall_line_width_x / 4",
                             "minimum_value_warning": "0",
                             "maximum_value_warning": "machine_nozzle_size",
-                            "visible": "infill_sparse_density > 0",
+                            "visible": "(infill_sparse_density > 0)",
                             "limit_to_extruder": "infill_extruder_nr",
                             "settable_per_mesh": false,
                             "filter": [
@@ -6619,7 +6621,7 @@
                             "unit": "mm",
                             "type": "float",
                             "default_value": 0.2,
-                            "calcu_value": "machine_nozzle_size / 2",
+                            "calcu_value": "(machine_nozzle_size / 2)",
                             "minimum_value": "0",
                             "maximum_value_warning": "machine_nozzle_size * 2",
                             "limit_to_extruder": "wall_0_extruder_nr",
@@ -6659,7 +6661,7 @@
                                     "calcu_value": "top_bottom_pattern !== 'concentric' ? 0.5 * (skin_line_width + (wall_line_count > 1 ? wall_line_width_x : wall_line_width_0)) * skin_overlap / 100 : 0",
                                     "visible": "(top_layers > 0 || bottom_layers > 0) && top_bottom_pattern !== 'concentric'",
                                     "settable_per_mesh": false,
-                                    "min": "-0.5 * machine_nozzle_size",
+                                    "min": "(-(0.5) * machine_nozzle_size)",
                                     "max": "machine_nozzle_size"
                                 }
                             },
@@ -6757,7 +6759,7 @@
                             "type": "float",
                             "default_value": 0,
                             "minimum_value": "0",
-                            "enabled": "hole_xy_offset > 0",
+                            "visible": "(hole_xy_offset > 0)",
                             "limit_to_extruder": "wall_0_extruder_nr",
                             "settable_per_mesh": true
                         },
@@ -6826,7 +6828,7 @@
                             "type": "float",
                             "unit": "mm",
                             "default_value": 0.1,
-                            "value": ".25 * machine_nozzle_size",
+                            "value": "(0.25 * machine_nozzle_size)",
                             "minimum_value": "0",
                             "minimum_value_warning": ".01",
                             "maximum_value_warning": "machine_nozzle_size",
@@ -6842,7 +6844,7 @@
                             "minimum_value_warning": ".5 * max(wall_line_width_0, wall_line_width_x)",
                             "maximum_value_warning": "min(wall_line_width_0, wall_line_width_x)",
                             "default_value": 0.3,
-                            "value": "machine_nozzle_size * .85",
+                            "value": "(machine_nozzle_size * 0.85)",
                             "type": "float",
                             "settable_per_mesh": false,
                             "filter": [
@@ -6885,12 +6887,12 @@
                             "description": "Minimum thickness of thin features. Model features that are thinner than this value will not be printed, while features thicker than the Minimum Feature Size will be widened to the Minimum Wall Line Width.",
                             "unit": "mm",
                             "default_value": 0.1,
-                            "value": "wall_line_width_0 / 4",
+                            "value": "(wall_line_width_0 / 4)",
                             "minimum_value": "0",
                             "maximum_value": "wall_line_width_0",
                             "type": "float",
                             "limit_to_extruder": "wall_0_extruder_nr",
-                            "enabled": "fill_outline_gaps",
+                            "visible": "fill_outline_gaps",
                             "settable_per_mesh": false,
                             "filter": [
                                 "accuracy",
@@ -6908,7 +6910,7 @@
                             "maximum_value_warning": "wall_line_width_0",
                             "type": "float",
                             "limit_to_extruder": "wall_0_extruder_nr",
-                            "enabled": "fill_outline_gaps",
+                            "visible": "fill_outline_gaps",
                             "settable_per_mesh": false,
                             "filter": [
                                 "accuracy",
@@ -7112,7 +7114,7 @@
                                     "maximum_value_warning": "50",
                                     "default_value": 20,
                                     "value": "jerk_wall_0",
-                                    "enabled": "resolveOrValue('jerk_enabled')",
+                                    "visible": "resolveOrValue('jerk_enabled')",
                                     "limit_to_extruder": "wall_0_extruder_nr",
                                     "settable_per_mesh": true
                                 },
@@ -7126,7 +7128,7 @@
                                     "maximum_value_warning": "50",
                                     "default_value": 20,
                                     "value": "jerk_wall_x",
-                                    "enabled": "resolveOrValue('jerk_enabled')",
+                                    "visible": "resolveOrValue('jerk_enabled')",
                                     "limit_to_extruder": "wall_x_extruder_nr",
                                     "settable_per_mesh": true
                                 },
@@ -7278,7 +7280,7 @@
                                             "unit": "mm/s",
                                             "type": "float",
                                             "default_value": 20,
-                                            "calcu_value": "jerk_layer_0 * jerk_travel / jerk_print",
+                                            "calcu_value": "((jerk_layer_0 * jerk_travel) / jerk_print)",
                                             "minimum_value": "0",
                                             "maximum_value_warning": "50",
                                             "visible": "jerk_enabled",
@@ -7336,7 +7338,7 @@
                             "minimum_value_warning": "0.1 + 0.4 * machine_nozzle_size",
                             "maximum_value_warning": "2 * machine_nozzle_size",
                             "type": "float",
-                            "enabled": "(support_enable || support_meshes_present) && support_interface_enable",
+                            "visible": "(support_enable || support_meshes_present) && support_interface_enable",
                             "limit_to_extruder": "support_interface_extruder_nr",
                             "value": "line_width",
                             "settable_per_mesh": false,
@@ -7377,7 +7379,7 @@
                             "minimum_value": "0.0001",
                             "minimum_value_warning": "50",
                             "maximum_value_warning": "150",
-                            "enabled": "(support_enable || support_meshes_present) && support_interface_enable",
+                            "visible": "(support_enable || support_meshes_present) && support_interface_enable",
                             "limit_to_extruder": "support_interface_extruder_nr",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false
@@ -7391,7 +7393,7 @@
                             "maximum_value": "math.sqrt(machine_max_feedrate_x ** 2 + machine_max_feedrate_y ** 2)",
                             "maximum_value_warning": "150",
                             "default_value": 30,
-                            "value": "speed_print / 2",
+                            "value": "(speed_print / 2)",
                             "settable_per_mesh": false
                         },
                         "speed_support": {
@@ -7404,7 +7406,7 @@
                             "maximum_value_warning": "150",
                             "default_value": 60,
                             "value": "speed_print",
-                            "enabled": "support_enable or support_meshes_present",
+                            "visible": "(support_enable || support_meshes_present)",
                             "settable_per_mesh": false,
                             "limit_to_extruder": "support_extruder_nr",
                             "settable_per_extruder": false
@@ -7418,9 +7420,9 @@
                             "minimum_value": "0.1",
                             "maximum_value": "math.sqrt(machine_max_feedrate_x ** 2 + machine_max_feedrate_y ** 2)",
                             "maximum_value_warning": "150",
-                            "enabled": "support_interface_enable and (support_enable or support_meshes_present)",
+                            "visible": "(support_interface_enable && (support_enable || support_meshes_present))",
                             "limit_to_extruder": "support_interface_extruder_nr",
-                            "value": "speed_support / 1.5",
+                            "value": "(speed_support / 1.5)",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false
                         },
@@ -7434,7 +7436,7 @@
                             "maximum_value_warning": "10000",
                             "default_value": 3000,
                             "value": "acceleration_print",
-                            "enabled": "resolveOrValue('acceleration_enabled')",
+                            "visible": "resolveOrValue('acceleration_enabled')",
                             "settable_per_mesh": false
                         },
                         "acceleration_support": {
@@ -7447,7 +7449,7 @@
                             "maximum_value_warning": "10000",
                             "default_value": 3000,
                             "value": "acceleration_print",
-                            "enabled": "resolveOrValue('acceleration_enabled') and (support_enable or support_meshes_present)",
+                            "visible": "(resolveOrValue('acceleration_enabled') && (support_enable || support_meshes_present))",
                             "settable_per_mesh": false,
                             "limit_to_extruder": "support_extruder_nr",
                             "settable_per_extruder": false
@@ -7462,7 +7464,7 @@
                             "minimum_value": "0.1",
                             "minimum_value_warning": "100",
                             "maximum_value_warning": "10000",
-                            "enabled": "resolveOrValue('acceleration_enabled') and support_interface_enable and (support_enable or support_meshes_present)",
+                            "visible": "(resolveOrValue('acceleration_enabled') && support_interface_enable && (support_enable || support_meshes_present))",
                             "limit_to_extruder": "support_interface_extruder_nr",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false
@@ -7473,7 +7475,7 @@
                             "type": "bool",
                             "default_value": false,
                             "resolve": "jerk_travel_enabled",
-                            "enabled": "jerk_enabled",
+                            "visible": "jerk_enabled",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false
                         },
@@ -7486,7 +7488,7 @@
                             "maximum_value_warning": "50",
                             "default_value": 20,
                             "value": "jerk_print",
-                            "enabled": "resolveOrValue('jerk_enabled')",
+                            "visible": "resolveOrValue('jerk_enabled')",
                             "settable_per_mesh": false
                         },
                         "jerk_support": {
@@ -7498,7 +7500,7 @@
                             "maximum_value_warning": "50",
                             "default_value": 20,
                             "value": "jerk_print",
-                            "enabled": "resolveOrValue('jerk_enabled') and (support_enable or support_meshes_present)",
+                            "visible": "(resolveOrValue('jerk_enabled') && (support_enable || support_meshes_present))",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false,
                             "limit_to_extruder": "support_extruder_nr"
@@ -7512,7 +7514,7 @@
                             "value": "jerk_support",
                             "minimum_value": "0",
                             "maximum_value_warning": "50",
-                            "enabled": "resolveOrValue('jerk_enabled') and support_interface_enable and (support_enable or support_meshes_present)",
+                            "visible": "(resolveOrValue('jerk_enabled') && support_interface_enable && (support_enable || support_meshes_present))",
                             "limit_to_extruder": "support_interface_extruder_nr",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false
@@ -7525,9 +7527,9 @@
                             "default_value": 25,
                             "minimum_value": "0.0001",
                             "minimum_value_warning": "1",
-                            "maximum_value": "machine_max_feedrate_e if retraction_enable else float('inf')",
+                            "maximum_value": "(retraction_enable ? machine_max_feedrate_e : float('inf'))",
                             "maximum_value_warning": "70",
-                            "enabled": "retraction_enable and machine_gcode_flavor != \"UltiGCode\"",
+                            "visible": "(retraction_enable && (machine_gcode_flavor !== 'UltiGCode'))",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false
                         },
@@ -7540,7 +7542,7 @@
                             "minimum_value_warning": "support_line_width * 5",
                             "default_value": 15,
                             "limit_to_extruder": "support_infill_extruder_nr",
-                            "enabled": "support_enable and support_structure=='tree'",
+                            "visible": "(support_enable && (support_structure === 'tree'))",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false
                         },
@@ -7553,7 +7555,7 @@
                             "minimum_value": "0",
                             "maximum_value": "100",
                             "limit_to_extruder": "support_roof_extruder_nr",
-                            "enabled": "support_roof_enable and (support_enable or support_meshes_present)",
+                            "visible": "(support_roof_enable && (support_enable || support_meshes_present))",
                             "value": "support_interface_density",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false
@@ -7567,7 +7569,7 @@
                             "minimum_value": "0",
                             "maximum_value": "100",
                             "limit_to_extruder": "support_bottom_extruder_nr",
-                            "enabled": "support_bottom_enable and (support_enable or support_meshes_present)",
+                            "visible": "(support_bottom_enable && (support_enable || support_meshes_present))",
                             "value": "support_interface_density",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false
@@ -7578,7 +7580,7 @@
                             "type": "extruder",
                             "default_value": "0",
                             "value": "adhesion_extruder_nr",
-                            "enabled": "extruders_enabled_count > 1 and (resolveOrValue('adhesion_type') in ['skirt', 'brim'])",
+                            "visible": "((extruders_enabled_count > 1) && ['skirt', 'brim'].includes(resolveOrValue('adhesion_type')))",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false
                         },
@@ -7588,7 +7590,7 @@
                             "type": "extruder",
                             "default_value": "0",
                             "value": "adhesion_extruder_nr",
-                            "enabled": "extruders_enabled_count > 1 and resolveOrValue('adhesion_type') == 'raft'",
+                            "visible": "((extruders_enabled_count > 1) && (resolveOrValue('adhesion_type') === 'raft'))",
                             "resolve": "raft_base_extruder_nr",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false
@@ -7599,7 +7601,7 @@
                             "type": "extruder",
                             "default_value": "0",
                             "value": "adhesion_extruder_nr",
-                            "enabled": "extruders_enabled_count > 1 and resolveOrValue('adhesion_type') == 'raft'",
+                            "visible": "((extruders_enabled_count > 1) && (resolveOrValue('adhesion_type') === 'raft'))",
                             "resolve": "raft_interface_extruder_nr",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false
@@ -7610,7 +7612,7 @@
                             "type": "extruder",
                             "default_value": "0",
                             "value": "adhesion_extruder_nr",
-                            "enabled": "extruders_enabled_count > 1 and resolveOrValue('adhesion_type') == 'raft'",
+                            "visible": "((extruders_enabled_count > 1) && (resolveOrValue('adhesion_type') === 'raft'))",
                             "resolve": "raft_surface_extruder_nr",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false
@@ -7624,7 +7626,7 @@
                             "minimum_value": "0.0",
                             "maximum_value_warning": "50.0",
                             "maximum_value": "0.5 * min(machine_width, machine_depth)",
-                            "enabled": "resolveOrValue('adhesion_type') == 'brim'",
+                            "visible": "(resolveOrValue('adhesion_type') === 'brim')",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false,
                             "limit_to_extruder": "skirt_brim_extruder_nr"
@@ -7638,7 +7640,7 @@
                             "default_value": 0,
                             "minimum_value_warning": "-50",
                             "maximum_value_warning": "100",
-                            "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                            "visible": "(resolveOrValue('adhesion_type') === 'raft')",
                             "settable_per_mesh": false,
                             "settable_per_extruder": true,
                             "limit_to_extruder": "raft_base_extruder_nr",
@@ -7653,8 +7655,8 @@
                                     "default_value": 0.0,
                                     "minimum_value_warning": "-0.5 * machine_nozzle_size",
                                     "maximum_value_warning": "machine_nozzle_size",
-                                    "value": "raft_base_line_width * raft_base_infill_overlap / 100",
-                                    "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                                    "value": "((raft_base_line_width * raft_base_infill_overlap) / 100)",
+                                    "visible": "(resolveOrValue('adhesion_type') === 'raft')",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": true,
                                     "limit_to_extruder": "raft_base_extruder_nr"
@@ -7668,7 +7670,7 @@
                             "default_value": 1,
                             "minimum_value": "0",
                             "maximum_value_warning": "10",
-                            "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                            "visible": "(resolveOrValue('adhesion_type') === 'raft')",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false,
                             "limit_to_extruder": "raft_interface_extruder_nr"
@@ -7695,7 +7697,7 @@
                         {
                             "label": "Fluid Motion Shift Distance",
                             "description": "Distance points are shifted to smooth the path",
-                            "enabled": "meshfix_fluid_motion_enabled",
+                            "visible": "meshfix_fluid_motion_enabled",
                             "type": "float",
                             "unit": "mm",
                             "default_value": 0.1,
@@ -7706,7 +7708,7 @@
                         {
                             "label": "Fluid Motion Small Distance",
                             "description": "Distance points are shifted to smooth the path",
-                            "enabled": "meshfix_fluid_motion_enabled",
+                            "visible": "meshfix_fluid_motion_enabled",
                             "unit": "mm",
                             "type": "float",
                             "default_value": 0.01,
@@ -7717,7 +7719,7 @@
                         {
                             "label": "Fluid Motion Angle",
                             "description": "If a toolpath-segment deviates more than this angle from the general motion it is smoothed.",
-                            "enabled": "meshfix_fluid_motion_enabled",
+                            "visible": "meshfix_fluid_motion_enabled",
                             "type": "float",
                             "unit": "\u00b0",
                             "default_value": 15,
@@ -7734,7 +7736,7 @@
                             "minimum_value": "0",
                             "minimum_value_warning": "0",
                             "default_value": 0,
-                            "enabled": "conical_overhang_enabled"
+                            "visible": "conical_overhang_enabled"
                         },
                         "material_alternate_walls": {
                             "label": "Alternate Wall Directions",
@@ -7751,7 +7753,7 @@
                             "description": "Remove inside corners from the raft, causing the raft to become convex.",
                             "type": "bool",
                             "default_value": false,
-                            "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                            "visible": "(resolveOrValue('adhesion_type') === 'raft')",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false,
                             "children":
@@ -7763,7 +7765,7 @@
                                     "type": "bool",
                                     "value": "raft_remove_inside_corners",
                                     "default_value": false,
-                                    "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                                    "visible": "(resolveOrValue('adhesion_type') === 'raft')",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": false
                                 },
@@ -7774,7 +7776,7 @@
                                     "type": "bool",
                                     "value": "raft_remove_inside_corners",
                                     "default_value": false,
-                                    "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                                    "visible": "(resolveOrValue('adhesion_type') === 'raft')",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": false
                                 },
@@ -7785,7 +7787,7 @@
                                     "type": "bool",
                                     "value": "raft_remove_inside_corners",
                                     "default_value": false,
-                                    "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                                    "visible": "(resolveOrValue('adhesion_type') === 'raft')",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": false
                                 }
@@ -7796,7 +7798,7 @@
                             "description": "The number of contours to print around the linear pattern in the base layer of the raft.",
                             "type": "int",
                             "default_value": 1,
-                            "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                            "visible": "(resolveOrValue('adhesion_type') === 'raft')",
                             "resolve": "raft_base_wall_count",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false
@@ -7944,8 +7946,8 @@
                             "limit_to_extruder": "infill_extruder_nr",
                             "settable_per_mesh": true,
                             "visible": "false",
-                            "min": "-1 * infill_line_distance",
-                            "max": "5 * infill_line_distance"
+                            "min": "(-(1) * infill_line_distance)",
+                            "max": "(5 * infill_line_distance)"
                         },
                         "gradual_infill_steps": {
                             "label": "Gradual Infill Steps",
@@ -8022,13 +8024,75 @@
                             "min": 0,
                             "max": 20000
                         },
+                        "skin_support": {
+                            "label": "Infill Skin Support",
+                            "description": "Print a solid infill pattern just below skin to avoid printing the skin over air.",
+                            "type": "bool",
+                            "default_value": true,
+                            "value": "(infill_sparse_density < 40)",
+                            "visible": "((infill_sparse_density > 0) && (top_layers > 0))",
+                            "settable_per_mesh": true,
+                            "settable_per_extruder": true
+                        },
+                        "skin_support_speed": {
+                            "label": "Skin Support Speed",
+                            "description": "The speed at which skin support regions are printed.",
+                            "unit": "mm/s",
+                            "type": "float",
+                            "minimum_value": "0",
+                            "maximum_value": "math.sqrt(machine_max_feedrate_x ** 2 + machine_max_feedrate_y ** 2)",
+                            "maximum_value_warning": "300",
+                            "default_value": 15,
+                            "value": "bridge_skin_speed",
+                            "visible": "skin_support",
+                            "settable_per_mesh": true,
+                            "settable_per_extruder": true
+                        },
+                        "skin_support_material_flow": {
+                            "label": "Skin Support Flow",
+                            "description": "When printing skin support regions, the amount of material extruded is multiplied by this value.",
+                            "unit": "%",
+                            "default_value": 60,
+                            "value": "bridge_skin_material_flow",
+                            "type": "float",
+                            "minimum_value": "5",
+                            "minimum_value_warning": "50",
+                            "maximum_value_warning": "250",
+                            "visible": "skin_support",
+                            "settable_per_mesh": true,
+                            "settable_per_extruder": true
+                        },
+                        "skin_support_density": {
+                            "label": "Skin Support Density",
+                            "description": "The density of the skin support layer. Values less than 100 will increase the gaps between the lines.",
+                            "unit": "%",
+                            "default_value": 100,
+                            "value": "bridge_skin_density",
+                            "type": "float",
+                            "minimum_value": "5",
+                            "minimum_value_warning": "20",
+                            "maximum_value_warning": "100",
+                            "visible": "skin_support",
+                            "settable_per_mesh": true,
+                            "settable_per_extruder": true
+                        },
+                        "skin_support_interlace_lines": {
+                            "label": "Interlace Skin Support Lines",
+                            "description": "When enabled, skin support lines will be printed interlaced, i.e. in 2 monotonic passes so that adjacent lines won't be printed just after each other. The lines of the first pass then have more time to cool down and are stronger when the second pass is added.",
+                            "default_value": false,
+                            "value": "bridge_interlace_lines",
+                            "type": "bool",
+                            "visible": "skin_support",
+                            "settable_per_mesh": true,
+                            "settable_per_extruder": true
+                        },
                         "skin_preshrink": {
                             "label": "Skin Removal Width",
                             "description": "The largest width of skin areas which are to be removed. Every skin area smaller than this value will disappear. This can help in limiting the amount of time and material spent on printing top/bottom skin at slanted surfaces in the model.",
                             "unit": "mm",
                             "type": "float",
                             "default_value": 1,
-                            "calcu_value": "wall_line_width_0 + (wall_line_count - 1) * wall_line_width_x",
+                            "calcu_value": "(wall_line_width_0 + ((wall_line_count - 1) * wall_line_width_x))",
                             "minimum_value": "0",
                             "maximum_value_warning": "wall_line_width_0 + (wall_line_count - 1) * wall_line_width_x",
                             "limit_to_extruder": "top_bottom_extruder_nr",
@@ -8075,7 +8139,7 @@
                             "unit": "mm",
                             "type": "float",
                             "default_value": 1,
-                            "calcu_value": "wall_line_width_0 + (wall_line_count - 1) * wall_line_width_x",
+                            "calcu_value": "(wall_line_width_0 + ((wall_line_count - 1) * wall_line_width_x))",
                             "minimum_value": "-skin_preshrink",
                             "limit_to_extruder": "top_bottom_extruder_nr",
                             "visible": "false",
@@ -8132,42 +8196,10 @@
                                     "unit": "mm",
                                     "type": "float",
                                     "default_value": 0,
-                                    "calcu_value": "top_layers * layer_height / Math.tan(Math.PI * max_skin_angle_for_expansion / 180)",
+                                    "calcu_value": "((top_layers * layer_height) / Math.tan(((Math.PI * max_skin_angle_for_expansion) / 180)))",
                                     "minimum_value": "0",
                                     "visible": "false",
                                     "limit_to_extruder": "top_bottom_extruder_nr",
-                                    "settable_per_mesh": true,
-                                    "min": 0,
-                                    "max": 20000
-                                }
-                            },
-                            "min": 0,
-                            "max": 20000
-                        },
-                        "skin_edge_support_thickness": {
-                            "label": "Skin Edge Support Thickness",
-                            "description": "The thickness of the extra infill that supports skin edges.",
-                            "unit": "mm",
-                            "default_value": 0,
-                            "minimum_value": "0",
-                            "maximum_value": "machine_height",
-                            "maximum_value_warning": "(infill_sparse_thickness) * 10",
-                            "type": "float",
-                            "calcu_value": "infill_sparse_density > 0 ? 0 : 0",
-                            "limit_to_extruder": "infill_extruder_nr",
-                            "visible": "false",
-                            "settable_per_mesh": true,
-                            "children": {
-                                "skin_edge_support_layers": {
-                                    "label": "Skin Edge Support Layers",
-                                    "description": "The number of infill layers that supports skin edges.",
-                                    "default_value": 0,
-                                    "minimum_value": "0",
-                                    "maximum_value_warning": "10",
-                                    "type": "int",
-                                    "calcu_value": "Math.ceil(Math.round(skin_edge_support_thickness / infill_sparse_thickness, 4))",
-                                    "limit_to_extruder": "infill_extruder_nr",
-                                    "visible": "false",
                                     "settable_per_mesh": true,
                                     "min": 0,
                                     "max": 20000
@@ -8238,7 +8270,7 @@
                                     "default_value": 5,
                                     "minimum_value": "0",
                                     "minimum_value_warning": "raft_interface_line_width",
-                                    "enabled": "resolveOrValue('adhesion_type') == 'raft' and not raft_base_remove_inside_corners",
+                                    "visible": "((resolveOrValue('adhesion_type') === 'raft') && !(raft_base_remove_inside_corners))",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": false
                                 },
@@ -8252,7 +8284,7 @@
                                     "default_value": 5,
                                     "minimum_value": "0",
                                     "minimum_value_warning": "raft_interface_line_width",
-                                    "enabled": "resolveOrValue('adhesion_type') == 'raft' and not raft_interface_remove_inside_corners",
+                                    "visible": "((resolveOrValue('adhesion_type') === 'raft') && !(raft_interface_remove_inside_corners))",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": false
                                 },
@@ -8266,7 +8298,7 @@
                                     "default_value": 5,
                                     "minimum_value": "0",
                                     "minimum_value_warning": "raft_interface_line_width",
-                                    "enabled": "resolveOrValue('adhesion_type') == 'raft' and not raft_surface_remove_inside_corners",
+                                    "visible": "((resolveOrValue('adhesion_type') === 'raft') && !(raft_surface_remove_inside_corners))",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": false
                                 }
@@ -8293,7 +8325,7 @@
                             "unit": "mm",
                             "type": "float",
                             "default_value": 0.22,
-                            "calcu_value": "raft_airgap / 2",
+                            "calcu_value": "(raft_airgap / 2)",
                             "minimum_value": "0",
                             "maximum_value_warning": "raft_airgap",
                             "visible": "false",
@@ -8309,7 +8341,7 @@
                             "unit": "mm",
                             "type": "float",
                             "default_value": 0.3,
-                            "calcu_value": "resolveOrValue(layer_height_0) * 1.2",
+                            "calcu_value": "(resolveOrValue(layer_height_0) * 1.2)",
                             "minimum_value": "0.001",
                             "minimum_value_warning": "0.04",
                             "maximum_value_warning": "0.75 * raft_base_line_width",
@@ -8327,7 +8359,7 @@
                             "type": "float",
                             "default_value": 0.8,
                             "minimum_value": "0.001",
-                            "calcu_value": "machine_nozzle_size * 2",
+                            "calcu_value": "(machine_nozzle_size * 2)",
                             "minimum_value_warning": "machine_nozzle_size * 0.5",
                             "maximum_value_warning": "machine_nozzle_size * 3",
                             "visible": "false",
@@ -8343,7 +8375,7 @@
                             "unit": "mm",
                             "type": "float",
                             "default_value": 1.6,
-                            "calcu_value": "raft_base_line_width * 2",
+                            "calcu_value": "(raft_base_line_width * 2)",
                             "minimum_value": "0",
                             "minimum_value_warning": "raft_base_line_width",
                             "maximum_value_warning": "100",
@@ -8360,7 +8392,7 @@
                             "unit": "mm",
                             "type": "float",
                             "default_value": 0.15,
-                            "calcu_value": "resolveOrValue(layer_height) * 1.5",
+                            "calcu_value": "(resolveOrValue(layer_height) * 1.5)",
                             "minimum_value": "0.001",
                             "minimum_value_warning": "0.04",
                             "maximum_value_warning": "0.75 * machine_nozzle_size",
@@ -8377,7 +8409,7 @@
                             "unit": "mm",
                             "type": "float",
                             "default_value": 0.7,
-                            "calcu_value": "line_width * 2",
+                            "calcu_value": "(line_width * 2)",
                             "minimum_value": "0.001",
                             "minimum_value_warning": "machine_nozzle_size * 0.5",
                             "maximum_value_warning": "machine_nozzle_size * 3",
@@ -8394,7 +8426,7 @@
                             "unit": "mm",
                             "type": "float",
                             "default_value": 0.9,
-                            "calcu_value": "raft_interface_line_width + 0.2",
+                            "calcu_value": "(raft_interface_line_width + 0.2)",
                             "minimum_value": "0",
                             "minimum_value_warning": "raft_interface_line_width",
                             "maximum_value_warning": "15.0",
@@ -8416,7 +8448,7 @@
                             "minimum_value": "-raft_interface_thickness",
                             "maximum_value_warning": "raft_interface_thickness / 2",
                             "maximum_value": "raft_interface_thickness",
-                            "enabled": "resolveOrValue('adhesion_type') == 'raft' and raft_interface_layers > 0",
+                            "visible": "((resolveOrValue('adhesion_type') === 'raft') && (raft_interface_layers > 0))",
                             "settable_per_mesh": false,
                             "settable_per_extruder": true,
                             "limit_to_extruder": "raft_interface_extruder_nr"
@@ -8430,7 +8462,7 @@
                             "default_value": 0,
                             "minimum_value_warning": "-50",
                             "maximum_value_warning": "100",
-                            "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                            "visible": "(resolveOrValue('adhesion_type') === 'raft')",
                             "settable_per_mesh": false,
                             "settable_per_extruder": true,
                             "limit_to_extruder": "raft_interface_extruder_nr",
@@ -8445,8 +8477,8 @@
                                     "default_value": 0.0,
                                     "minimum_value_warning": "-0.5 * machine_nozzle_size",
                                     "maximum_value_warning": "machine_nozzle_size",
-                                    "value": "raft_interface_line_width * raft_interface_infill_overlap / 100",
-                                    "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                                    "value": "((raft_interface_line_width * raft_interface_infill_overlap) / 100)",
+                                    "visible": "(resolveOrValue('adhesion_type') === 'raft')",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": true,
                                     "limit_to_extruder": "raft_interface_extruder_nr"
@@ -8529,7 +8561,7 @@
                             "minimum_value": "-raft_surface_thickness",
                             "maximum_value_warning": "raft_surface_thickness / 2",
                             "maximum_value": "raft_surface_thickness",
-                            "enabled": "resolveOrValue('adhesion_type') == 'raft' and raft_surface_layers > 0",
+                            "visible": "((resolveOrValue('adhesion_type') === 'raft') && (raft_surface_layers > 0))",
                             "settable_per_mesh": false,
                             "settable_per_extruder": true,
                             "limit_to_extruder": "raft_surface_extruder_nr"
@@ -8541,7 +8573,7 @@
                             "type": "bool",
                             "default_value": false,
                             "value": "skin_monotonic",
-                            "enabled": "resolveOrValue('adhesion_type') == 'raft' and raft_surface_layers > 0",
+                            "visible": "((resolveOrValue('adhesion_type') === 'raft') && (raft_surface_layers > 0))",
                             "settable_per_mesh": false,
                             "settable_per_extruder": true,
                             "limit_to_extruder": "raft_surface_extruder_nr"
@@ -8555,7 +8587,7 @@
                             "default_value": 0,
                             "minimum_value_warning": "-50",
                             "maximum_value_warning": "100",
-                            "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                            "visible": "(resolveOrValue('adhesion_type') === 'raft')",
                             "settable_per_mesh": false,
                             "settable_per_extruder": true,
                             "limit_to_extruder": "raft_surface_extruder_nr",
@@ -8570,8 +8602,8 @@
                                     "default_value": 0.0,
                                     "minimum_value_warning": "-0.5 * machine_nozzle_size",
                                     "maximum_value_warning": "machine_nozzle_size",
-                                    "value": "raft_surface_line_width * raft_surface_infill_overlap / 100",
-                                    "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                                    "value": "((raft_surface_line_width * raft_surface_infill_overlap) / 100)",
+                                    "visible": "(resolveOrValue('adhesion_type') === 'raft')",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": true,
                                     "limit_to_extruder": "raft_surface_extruder_nr"
@@ -8585,7 +8617,7 @@
                             "type": "int",
                             "default_value": 1,
                             "minimum_value": "0",
-                            "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                            "visible": "(resolveOrValue('adhesion_type') === 'raft')",
                             "settable_per_mesh": false,
                             "settable_per_extruder": false,
                             "children":
@@ -8598,7 +8630,7 @@
                                     "default_value": 1,
                                     "value": "raft_wall_count",
                                     "minimum_value": "0",
-                                    "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                                    "visible": "(resolveOrValue('adhesion_type') === 'raft')",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": false
                                 },
@@ -8609,7 +8641,7 @@
                                     "type": "int",
                                     "default_value": 0,
                                     "minimum_value": "0",
-                                    "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                                    "visible": "(resolveOrValue('adhesion_type') === 'raft')",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": false
                                 },
@@ -8620,7 +8652,7 @@
                                     "type": "int",
                                     "default_value": 0,
                                     "minimum_value": "0",
-                                    "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                                    "visible": "(resolveOrValue('adhesion_type') === 'raft')",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": false
                                 }
@@ -8636,7 +8668,7 @@
                             "maximum_value": "Math.sqrt(machine_max_feedrate_x ** 2 + machine_max_feedrate_y ** 2)",
                             "maximum_value_warning": "200",
                             "visible": "false",
-                            "calcu_value": "speed_print / 60 * 30",
+                            "calcu_value": "((speed_print / 60) * 30)",
                             "settable_per_mesh": false,
                             "settable_per_extruder": true,
                             "limit_to_extruder": "adhesion_extruder_nr",
@@ -8651,7 +8683,7 @@
                                     "maximum_value": "Math.sqrt(machine_max_feedrate_x ** 2 + machine_max_feedrate_y ** 2)",
                                     "maximum_value_warning": "200",
                                     "visible": "false",
-                                    "calcu_value": "0.75 * raft_speed",
+                                    "calcu_value": "(0.75 * raft_speed)",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": true,
                                     "limit_to_extruder": "adhesion_extruder_nr",
@@ -8664,7 +8696,7 @@
                                     "unit": "mm/s",
                                     "type": "float",
                                     "default_value": 15,
-                                    "calcu_value": "raft_speed * 0.75",
+                                    "calcu_value": "(raft_speed * 0.75)",
                                     "minimum_value": "0.1",
                                     "maximum_value": "Math.sqrt(machine_max_feedrate_x ** 2 + machine_max_feedrate_y ** 2)",
                                     "maximum_value_warning": "150",
@@ -8901,7 +8933,7 @@
                             "unit": "%",
                             "default_value": 100.0,
                             "minimum_value": "10",
-                            "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                            "visible": "(resolveOrValue('adhesion_type') === 'raft')",
                             "settable_per_mesh": false,
                             "settable_per_extruder": true,
                             "children":
@@ -8915,7 +8947,7 @@
                                     "default_value": 100.0,
                                     "value": "raft_flow",
                                     "minimum_value": "10",
-                                    "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                                    "visible": "(resolveOrValue('adhesion_type') === 'raft')",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": true,
                                     "limit_to_extruder": "raft_base_extruder_nr"
@@ -8929,7 +8961,7 @@
                                     "default_value": 100.0,
                                     "value": "raft_flow",
                                     "minimum_value": "10",
-                                    "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                                    "visible": "(resolveOrValue('adhesion_type') === 'raft')",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": true,
                                     "limit_to_extruder": "raft_interface_extruder_nr"
@@ -8943,7 +8975,7 @@
                                     "default_value": 100.0,
                                     "value": "raft_flow",
                                     "minimum_value": "10",
-                                    "enabled": "resolveOrValue('adhesion_type') == 'raft'",
+                                    "visible": "(resolveOrValue('adhesion_type') === 'raft')",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": true,
                                     "limit_to_extruder": "raft_surface_extruder_nr"
@@ -9037,7 +9069,7 @@
                                     "type": "bool",
                                     "visible": "false",
                                     "default_value": true,
-                                    "calcu_value": "extruders_enabled_count > 1",
+                                    "calcu_value": "(extruders_enabled_count > 1)",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": false,
                                     "settable_per_meshgroup": true
@@ -9082,7 +9114,7 @@
                                     "unit": "mm",
                                     "visible": "false",
                                     "default_value": 0.8,
-                                    "calcu_value": "Math.min(meshfix_maximum_resolution * speed_travel / speed_print, 2 * line_width)",
+                                    "calcu_value": "Math.min(((meshfix_maximum_resolution * speed_travel) / speed_print), (2 * line_width))",
                                     "minimum_value": "0.001",
                                     "minimum_value_warning": "0.05",
                                     "maximum_value_warning": "10",
@@ -9135,7 +9167,7 @@
                                     "default_value": false,
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": false,
-                                    "enabled": "print_sequence == 'one_at_a_time'"
+                                    "visible": "(print_sequence === 'one_at_a_time')"
                                 },
                                 "infill_mesh": {
                                     "label": "Infill Mesh",
@@ -9443,7 +9475,7 @@
                                     "minimum_value": "0",
                                     "maximum_value_warning": "10",
                                     "default_value": 10,
-                                    "resolve": "Math.max((draft_shield_dist))",
+                                    "resolve": "Math.max(draft_shield_dist)",
                                     "visible": "draft_shield_enabled",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": false,
@@ -9459,7 +9491,7 @@
                                         "limited": "Limited"
                                     },
                                     "default_value": "full",
-                                    "resolve": "'full' if 'full' in 'draft_shield_height_limitation' else 'limited'",
+                                    "resolve": "('draft_shield_height_limitation'.includes('full') ? 'full' : 'limited')",
                                     "visible": "draft_shield_enabled",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": false
@@ -9644,378 +9676,6 @@
                                     "minimum_value": "0",
                                     "maximum_value_warning": "100",
                                     "default_value": 100,
-                                    "settable_per_mesh": false,
-                                    "settable_per_extruder": false,
-                                    "settable_per_meshgroup": false,
-                                    "min": 0,
-                                    "max": 20000
-                                },
-                                "wireframe_enabled": {
-                                    "label": "Wire Printing",
-                                    "description": "Print only the outside surface with a sparse webbed structure, printing 'in thin air'. This is realized by horizontally printing the contours of the model at given Z intervals which are connected via upward and diagonally downward lines.",
-                                    "type": "bool",
-                                    "default_value": false,
-                                    "settable_per_mesh": false,
-                                    "settable_per_extruder": false,
-                                    "settable_per_meshgroup": false
-                                },
-                                "wireframe_height": {
-                                    "label": "WP Connection Height",
-                                    "description": "The height of the upward and diagonally downward lines between two horizontal parts. This determines the overall density of the net structure. Only applies to Wire Printing.",
-                                    "type": "float",
-                                    "unit": "mm",
-                                    "default_value": 3,
-                                    "calcu_value": "machine_nozzle_head_distance",
-                                    "minimum_value": "0.001",
-                                    "maximum_value_warning": "20",
-                                    "visible": "wireframe_enabled",
-                                    "settable_per_mesh": false,
-                                    "settable_per_extruder": false,
-                                    "settable_per_meshgroup": false,
-                                    "min": 0,
-                                    "max": 20000
-                                },
-                                "wireframe_roof_inset": {
-                                    "label": "WP Roof Inset Distance",
-                                    "description": "The distance covered when making a connection from a roof outline inward. Only applies to Wire Printing.",
-                                    "type": "float",
-                                    "unit": "mm",
-                                    "default_value": 3,
-                                    "minimum_value": "0",
-                                    "minimum_value_warning": "machine_nozzle_size",
-                                    "maximum_value_warning": "20",
-                                    "visible": "wireframe_enabled",
-                                    "calcu_value": "wireframe_height",
-                                    "settable_per_mesh": false,
-                                    "settable_per_extruder": false,
-                                    "settable_per_meshgroup": false,
-                                    "min": 0,
-                                    "max": 20000
-                                },
-                                "wireframe_printspeed": {
-                                    "label": "WP Speed",
-                                    "description": "Speed at which the nozzle moves when extruding material. Only applies to Wire Printing.",
-                                    "unit": "mm/s",
-                                    "type": "float",
-                                    "default_value": 5,
-                                    "minimum_value": "0.05",
-                                    "maximum_value": "Math.sqrt(Math.pow(machine_max_feedrate_x, 2) + Math.pow(machine_max_feedrate_y, 2) + Math.pow(machine_max_feedrate_z, 2))",
-                                    "maximum_value_warning": "50",
-                                    "visible": "wireframe_enabled",
-                                    "settable_per_mesh": false,
-                                    "settable_per_extruder": false,
-                                    "settable_per_meshgroup": false,
-                                    "children": {
-                                        "wireframe_printspeed_bottom": {
-                                            "label": "WP Bottom Printing Speed",
-                                            "description": "Speed of printing the first layer, which is the only layer touching the build platform. Only applies to Wire Printing.",
-                                            "unit": "mm/s",
-                                            "type": "float",
-                                            "default_value": 5,
-                                            "minimum_value": "0.05",
-                                            "maximum_value": "Math.sqrt(Math.pow(machine_max_feedrate_x, 2) + Math.pow(machine_max_feedrate_y, 2))",
-                                            "maximum_value_warning": "50",
-                                            "visible": "wireframe_enabled",
-                                            "calcu_value": "wireframe_printspeed_flat",
-                                            "settable_per_mesh": false,
-                                            "settable_per_extruder": false,
-                                            "settable_per_meshgroup": false,
-                                            "min": 0,
-                                            "max": 20000
-                                        },
-                                        "wireframe_printspeed_up": {
-                                            "label": "WP Upward Printing Speed",
-                                            "description": "Speed of printing a line upward 'in thin air'. Only applies to Wire Printing.",
-                                            "unit": "mm/s",
-                                            "type": "float",
-                                            "default_value": 5,
-                                            "minimum_value": "0.05",
-                                            "maximum_value": "Math.sqrt(Math.pow(machine_max_feedrate_x, 2) + Math.pow(machine_max_feedrate_y, 2) + Math.pow(machine_max_feedrate_z, 2))",
-                                            "maximum_value_warning": "50",
-                                            "visible": "wireframe_enabled",
-                                            "calcu_value": "wireframe_printspeed",
-                                            "settable_per_mesh": false,
-                                            "settable_per_extruder": false,
-                                            "settable_per_meshgroup": false,
-                                            "min": 0,
-                                            "max": 20000
-                                        },
-                                        "wireframe_printspeed_down": {
-                                            "label": "WP Downward Printing Speed",
-                                            "description": "Speed of printing a line diagonally downward. Only applies to Wire Printing.",
-                                            "unit": "mm/s",
-                                            "type": "float",
-                                            "default_value": 5,
-                                            "minimum_value": "0.05",
-                                            "maximum_value": "Math.sqrt(Math.pow(machine_max_feedrate_x, 2) + Math.pow(machine_max_feedrate_y, 2) + Math.pow(machine_max_feedrate_z, 2))",
-                                            "maximum_value_warning": "50",
-                                            "visible": "wireframe_enabled",
-                                            "calcu_value": "wireframe_printspeed",
-                                            "settable_per_mesh": false,
-                                            "settable_per_extruder": false,
-                                            "settable_per_meshgroup": false,
-                                            "min": 0,
-                                            "max": 20000
-                                        },
-                                        "wireframe_printspeed_flat": {
-                                            "label": "WP Horizontal Printing Speed",
-                                            "description": "Speed of printing the horizontal contours of the model. Only applies to Wire Printing.",
-                                            "unit": "mm/s",
-                                            "type": "float",
-                                            "default_value": 5,
-                                            "minimum_value": "0.05",
-                                            "maximum_value": "Math.sqrt(Math.pow(machine_max_feedrate_x, 2) + Math.pow(machine_max_feedrate_y, 2))",
-                                            "maximum_value_warning": "100",
-                                            "calcu_value": "wireframe_printspeed",
-                                            "visible": "wireframe_enabled",
-                                            "settable_per_mesh": false,
-                                            "settable_per_extruder": false,
-                                            "settable_per_meshgroup": false,
-                                            "min": 0,
-                                            "max": 20000
-                                        }
-                                    },
-                                    "min": 0,
-                                    "max": 20000
-                                },
-                                "wireframe_flow": {
-                                    "label": "WP Flow",
-                                    "description": "Flow compensation: the amount of material extruded is multiplied by this value. Only applies to Wire Printing.",
-                                    "unit": "%",
-                                    "default_value": 100,
-                                    "minimum_value": "0",
-                                    "maximum_value_warning": "100",
-                                    "type": "float",
-                                    "visible": "wireframe_enabled",
-                                    "settable_per_mesh": false,
-                                    "settable_per_extruder": false,
-                                    "settable_per_meshgroup": false,
-                                    "children": {
-                                        "wireframe_flow_connection": {
-                                            "label": "WP Connection Flow",
-                                            "description": "Flow compensation when going up or down. Only applies to Wire Printing.",
-                                            "unit": "%",
-                                            "default_value": 100,
-                                            "minimum_value": "0",
-                                            "maximum_value_warning": "100",
-                                            "type": "float",
-                                            "visible": "wireframe_enabled",
-                                            "calcu_value": "wireframe_flow",
-                                            "settable_per_mesh": false,
-                                            "settable_per_extruder": false,
-                                            "settable_per_meshgroup": false,
-                                            "min": 0,
-                                            "max": 20000
-                                        },
-                                        "wireframe_flow_flat": {
-                                            "label": "WP Flat Flow",
-                                            "description": "Flow compensation when printing flat lines. Only applies to Wire Printing.",
-                                            "unit": "%",
-                                            "default_value": 100,
-                                            "minimum_value": "0",
-                                            "maximum_value_warning": "100",
-                                            "type": "float",
-                                            "visible": "wireframe_enabled",
-                                            "calcu_value": "wireframe_flow",
-                                            "settable_per_mesh": false,
-                                            "settable_per_extruder": false,
-                                            "settable_per_meshgroup": false,
-                                            "min": 0,
-                                            "max": 20000
-                                        }
-                                    },
-                                    "min": 0,
-                                    "max": 20000
-                                },
-                                "wireframe_top_delay": {
-                                    "label": "WP Top Delay",
-                                    "description": "Delay time after an upward move, so that the upward line can harden. Only applies to Wire Printing.",
-                                    "unit": "s",
-                                    "type": "float",
-                                    "default_value": 0,
-                                    "minimum_value": "0",
-                                    "maximum_value_warning": "1",
-                                    "visible": "wireframe_enabled",
-                                    "settable_per_mesh": false,
-                                    "settable_per_extruder": false,
-                                    "settable_per_meshgroup": false,
-                                    "min": 0,
-                                    "max": 20000
-                                },
-                                "wireframe_bottom_delay": {
-                                    "label": "WP Bottom Delay",
-                                    "description": "Delay time after a downward move. Only applies to Wire Printing.",
-                                    "unit": "s",
-                                    "type": "float",
-                                    "default_value": 0,
-                                    "minimum_value": "0",
-                                    "maximum_value_warning": "1",
-                                    "visible": "wireframe_enabled",
-                                    "settable_per_mesh": false,
-                                    "settable_per_extruder": false,
-                                    "settable_per_meshgroup": false,
-                                    "min": 0,
-                                    "max": 20000
-                                },
-                                "wireframe_flat_delay": {
-                                    "label": "WP Flat Delay",
-                                    "description": "Delay time between two horizontal segments. Introducing such a delay can cause better adhesion to previous layers at the connection points, while too long delays cause sagging. Only applies to Wire Printing.",
-                                    "unit": "s",
-                                    "type": "float",
-                                    "default_value": 0.1,
-                                    "minimum_value": "0",
-                                    "maximum_value_warning": "0.5",
-                                    "visible": "wireframe_enabled",
-                                    "settable_per_mesh": false,
-                                    "settable_per_extruder": false,
-                                    "settable_per_meshgroup": false,
-                                    "min": 0,
-                                    "max": 20000
-                                },
-                                "wireframe_up_half_speed": {
-                                    "label": "WP Ease Upward",
-                                    "description": "Distance of an upward move which is extruded with half speed.\nThis can cause better adhesion to previous layers, while not heating the material in those layers too much. Only applies to Wire Printing.",
-                                    "type": "float",
-                                    "unit": "mm",
-                                    "default_value": 0.3,
-                                    "minimum_value": "0",
-                                    "maximum_value_warning": "5.0",
-                                    "visible": "wireframe_enabled",
-                                    "settable_per_mesh": false,
-                                    "settable_per_extruder": false,
-                                    "settable_per_meshgroup": false,
-                                    "min": 0,
-                                    "max": 20000
-                                },
-                                "wireframe_top_jump": {
-                                    "label": "WP Knot Size",
-                                    "description": "Creates a small knot at the top of an upward line, so that the consecutive horizontal layer has a better chance to connect to it. Only applies to Wire Printing.",
-                                    "type": "float",
-                                    "unit": "mm",
-                                    "default_value": 0.6,
-                                    "minimum_value": "0",
-                                    "maximum_value_warning": "2.0",
-                                    "visible": "wireframe_enabled && wireframe_strategy === 'knot'",
-                                    "settable_per_mesh": false,
-                                    "settable_per_extruder": false,
-                                    "settable_per_meshgroup": false,
-                                    "min": 0,
-                                    "max": 20000
-                                },
-                                "wireframe_fall_down": {
-                                    "label": "WP Fall Down",
-                                    "description": "Distance with which the material falls down after an upward extrusion. This distance is compensated for. Only applies to Wire Printing.",
-                                    "type": "float",
-                                    "unit": "mm",
-                                    "default_value": 0.5,
-                                    "minimum_value": "0",
-                                    "maximum_value_warning": "wireframe_height",
-                                    "visible": "wireframe_enabled && wireframe_strategy === 'compensate'",
-                                    "settable_per_mesh": false,
-                                    "settable_per_extruder": false,
-                                    "settable_per_meshgroup": false,
-                                    "min": 0,
-                                    "max": 20000
-                                },
-                                "wireframe_drag_along": {
-                                    "label": "WP Drag Along",
-                                    "description": "Distance with which the material of an upward extrusion is dragged along with the diagonally downward extrusion. This distance is compensated for. Only applies to Wire Printing.",
-                                    "type": "float",
-                                    "unit": "mm",
-                                    "default_value": 0.6,
-                                    "minimum_value": "0",
-                                    "maximum_value_warning": "wireframe_height",
-                                    "visible": "wireframe_enabled && wireframe_strategy === 'compensate'",
-                                    "settable_per_mesh": false,
-                                    "settable_per_extruder": false,
-                                    "settable_per_meshgroup": false,
-                                    "min": 0,
-                                    "max": 20000
-                                },
-                                "wireframe_strategy": {
-                                    "label": "WP Strategy",
-                                    "description": "Strategy for making sure two consecutive layers connect at each connection point. Retraction lets the upward lines harden in the right position, but may cause filament grinding. A knot can be made at the end of an upward line to heighten the chance of connecting to it and to let the line cool; however, it may require slow printing speeds. Another strategy is to compensate for the sagging of the top of an upward line; however, the lines won't always fall down as predicted.",
-                                    "type": "enum",
-                                    "options": {
-                                        "compensate": "Compensate",
-                                        "knot": "Knot",
-                                        "retract": "Retract"
-                                    },
-                                    "default_value": "compensate",
-                                    "visible": "wireframe_enabled",
-                                    "settable_per_mesh": false,
-                                    "settable_per_extruder": false,
-                                    "settable_per_meshgroup": false
-                                },
-                                "wireframe_straight_before_down": {
-                                    "label": "WP Straighten Downward Lines",
-                                    "description": "Percentage of a diagonally downward line which is covered by a horizontal line piece. This can prevent sagging of the top most point of upward lines. Only applies to Wire Printing.",
-                                    "type": "float",
-                                    "unit": "%",
-                                    "default_value": 20,
-                                    "minimum_value": "0",
-                                    "maximum_value": "100",
-                                    "visible": "wireframe_enabled",
-                                    "settable_per_mesh": false,
-                                    "settable_per_extruder": false,
-                                    "settable_per_meshgroup": false,
-                                    "min": 0,
-                                    "max": 20000
-                                },
-                                "wireframe_roof_fall_down": {
-                                    "label": "WP Roof Fall Down",
-                                    "description": "The distance which horizontal roof lines printed 'in thin air' fall down when being printed. This distance is compensated for. Only applies to Wire Printing.",
-                                    "type": "float",
-                                    "unit": "mm",
-                                    "default_value": 2,
-                                    "minimum_value_warning": "0",
-                                    "maximum_value_warning": "wireframe_roof_inset",
-                                    "visible": "wireframe_enabled",
-                                    "settable_per_mesh": false,
-                                    "settable_per_extruder": false,
-                                    "settable_per_meshgroup": false,
-                                    "min": 0,
-                                    "max": 20000
-                                },
-                                "wireframe_roof_drag_along": {
-                                    "label": "WP Roof Drag Along",
-                                    "description": "The distance of the end piece of an inward line which gets dragged along when going back to the outer outline of the roof. This distance is compensated for. Only applies to Wire Printing.",
-                                    "type": "float",
-                                    "unit": "mm",
-                                    "default_value": 0.8,
-                                    "minimum_value": "0",
-                                    "maximum_value_warning": "10",
-                                    "visible": "wireframe_enabled",
-                                    "settable_per_mesh": false,
-                                    "settable_per_extruder": false,
-                                    "settable_per_meshgroup": false,
-                                    "min": 0,
-                                    "max": 20000
-                                },
-                                "wireframe_roof_outer_delay": {
-                                    "label": "WP Roof Outer Delay",
-                                    "description": "Time spent at the outer perimeters of hole which is to become a roof. Longer times can ensure a better connection. Only applies to Wire Printing.",
-                                    "type": "float",
-                                    "unit": "s",
-                                    "default_value": 0.2,
-                                    "minimum_value": "0",
-                                    "maximum_value_warning": "2.0",
-                                    "visible": "wireframe_enabled",
-                                    "settable_per_mesh": false,
-                                    "settable_per_extruder": false,
-                                    "settable_per_meshgroup": false,
-                                    "min": 0,
-                                    "max": 20000
-                                },
-                                "wireframe_nozzle_clearance": {
-                                    "label": "WP Nozzle Clearance",
-                                    "description": "Distance between the nozzle and horizontally downward lines. Larger clearance results in diagonally downward lines with a less steep angle, which in turn results in less upward connections with the next layer. Only applies to Wire Printing.",
-                                    "type": "float",
-                                    "unit": "mm",
-                                    "default_value": 1,
-                                    "minimum_value_warning": "0",
-                                    "maximum_value_warning": "10.0",
-                                    "visible": "wireframe_enabled",
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": false,
                                     "settable_per_meshgroup": false,
@@ -10299,7 +9959,7 @@
                                             "type": "float",
                                             "minimum_value": "0",
                                             "default_value": 0,
-                                            "calcu_value": "small_hole_max_size * Math.PI",
+                                            "calcu_value": "(small_hole_max_size * Math.PI)",
                                             "settable_per_mesh": true,
                                             "min": 0,
                                             "max": 20000

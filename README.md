@@ -6,4 +6,8 @@
 
    ```> npx tsx scripts/compare-modifications.ts```
 
+- Convert Cura Python syntax to Luban JS syntax
+
+   ```> python scripts/cura_to_luban.py <original file> > <output file>```
+
 - Normalize all 3D printing definition files (TODO)
