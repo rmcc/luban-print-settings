@@ -1509,6 +1509,22 @@
                             "visible": true,
                             "settable_per_mesh": true,
                             "children": {
+                                "material_max_flowrate": {
+                                    "default_value": 16,
+                                    "description": "Maximum flow rate that the printer can extrude for the material",
+                                    "visible": true,
+                                    "label": "Material Maximum Flow Rate",
+                                    "maximum_value": "machine_max_feedrate_e * (material_diameter/2)**2 * math.pi",
+                                    "minimum_value": "0",
+                                    "settable_per_extruder": true,
+                                    "settable_per_mesh": false,
+                                    "type": "float",
+                                    "unit": "mm³/s",
+                                    "value": "16",
+                                    "filter": [
+                                        "all"
+                                    ]
+                                },
                                 "wall_0_material_flow": {
                                     "label": "Outer Wall Flow",
                                     "description": "Flow compensation on the outermost wall line.",
@@ -1554,7 +1570,11 @@
                                     "minimum_value": "0.0001",
                                     "minimum_value_warning": "50",
                                     "maximum_value_warning": "150",
+                                    "visible": "((roofing_layer_count > 0) && (top_layers > 0))",
                                     "limit_to_extruder": "wall_0_extruder_nr",
+                                    "filter": [
+                                        "all"
+                                    ],
                                     "settable_per_mesh": true
                                 },
                                 "wall_x_material_flow_roofing":
@@ -1568,7 +1588,11 @@
                                     "minimum_value": "0.0001",
                                     "minimum_value_warning": "50",
                                     "maximum_value_warning": "150",
+                                    "visible": "((roofing_layer_count > 0) && (top_layers > 0))",
                                     "limit_to_extruder": "wall_x_extruder_nr",
+                                    "filter": [
+                                        "all"
+                                    ],
                                     "settable_per_mesh": true
                                 },
                                 "wall_0_material_flow_flooring": {
@@ -1583,6 +1607,9 @@
                                     "maximum_value_warning": "150",
                                     "visible": "((flooring_layer_count > 0) && (bottom_layers > 0))",
                                     "limit_to_extruder": "wall_0_extruder_nr",
+                                    "filter": [
+                                        "all"
+                                    ],
                                     "settable_per_mesh": true
                                 },
                                 "wall_x_material_flow_flooring": {
@@ -1597,6 +1624,9 @@
                                     "maximum_value_warning": "150",
                                     "visible": "((flooring_layer_count > 0) && (bottom_layers > 0))",
                                     "limit_to_extruder": "wall_x_extruder_nr",
+                                    "filter": [
+                                        "all"
+                                    ],
                                     "settable_per_mesh": true
                                 },
                                 "skin_material_flow": {
@@ -1828,22 +1858,6 @@
                                         "all"
                                     ],
                                     "settable_per_meshgroup": false
-                                },
-                                "material_max_flowrate": {
-                                    "default_value": 16,
-                                    "description": "Maximum flow rate that the printer can extrude for the material",
-                                    "enabled": false,
-                                    "label": "Material Maximum Flow Rate",
-                                    "maximum_value": "machine_max_feedrate_e * (material_diameter/2)**2 * math.pi",
-                                    "minimum_value": "0",
-                                    "settable_per_extruder": true,
-                                    "settable_per_mesh": false,
-                                    "type": "float",
-                                    "unit": "mm³/s",
-                                    "value": "16",
-                                    "filter": [
-                                        "all"
-                                    ]
                                 },
                                 "prime_tower_flow": {
                                     "label": "Prime Tower Flow",
@@ -3730,6 +3744,9 @@
                             "visible": "(((top_layers > 0) || (bottom_layers > 0)) && (top_bottom_pattern !== 'concentric'))",
                             "limit_to_extruder": "top_bottom_extruder_nr",
                             "settable_per_mesh": true,
+                            "filter": [
+                                "advanced"
+                            ],
                             "unit": "mm"
                         },
                         "small_skin_on_surface":
@@ -3740,7 +3757,10 @@
                             "default_value": false,
                             "type": "bool",
                             "visible": "((small_skin_width > 0) && (top_layers > 0))",
-                                "limit_to_extruder": "top_bottom_extruder_nr",
+                            "limit_to_extruder": "top_bottom_extruder_nr",
+                            "filter": [
+                                "advanced"
+                            ],
                             "settable_per_mesh": true
                         },
                         "infill_sparse_density": {
@@ -3928,8 +3948,8 @@
                             "settable_per_extruder": true,
                             "filter": [
                                 "advanced",
-                            "strength",
-                            "efficiency"
+                                "strength",
+                                "efficiency"
                             ]
                         },
                         "infill_start_move_inwards_length": {
@@ -3947,8 +3967,8 @@
                             "settable_per_extruder": true,
                             "filter": [
                                 "advanced",
-                            "strength",
-                            "efficiency"
+                                "strength",
+                                "efficiency"
                             ]
                         },
                         "infill_end_move_inwards_length": {
@@ -3966,8 +3986,8 @@
                             "settable_per_extruder": true,
                             "filter": [
                                 "advanced",
-                            "strength",
-                            "efficiency"
+                                "strength",
+                                "efficiency"
                             ]
                         },
                         "infill_start_end_preference": {
@@ -3984,8 +4004,8 @@
                             "settable_per_mesh": true,
                             "filter": [
                                 "advanced",
-                            "strength",
-                            "efficiency"
+                                "strength",
+                                "efficiency"
                             ]
                         },
 
@@ -4510,6 +4530,10 @@
                             "settable_per_mesh": false,
                             "settable_per_extruder": true,
                             "settable_per_meshgroup": false,
+                            "filter": [
+                                "basic",
+                                "advanced"
+                            ],
                             "children":
                             {
                                 "support_z_seam_min_distance":
@@ -5421,6 +5445,9 @@
                                     "maximum_value": "(machine_height / layer_height)",
                                     "visible": "(resolveOrValue(adhesion_type) === 'skirt')",
                                     "limit_to_extruder": "skirt_brim_extruder_nr",
+                                    "filter": [
+                                        "advanced"
+                                    ],
                                     "settable_per_mesh": false,
                                     "settable_per_extruder": true
                                 },
@@ -5864,9 +5891,12 @@
                                 "interleaved": "Interleaved"
                             },
                             "default_value": "normal",
-                            "visible": "false",
+                            "visible": "prime_tower_enable",
                             "settable_per_mesh": false,
-                            "settable_per_extruder": false
+                            "settable_per_extruder": false,
+                            "filter": [
+                                "advanced"
+                            ]
                         },
                         "prime_tower_size": {
                             "label": "Prime Tower Size",
@@ -6254,8 +6284,8 @@
                                             "settable_per_mesh": false,
                                             "filter": [
                                                 "basic",
-                                            "advanced",
-                                            "surface_quality"
+                                                "advanced",
+                                                "surface_quality"
                                             ],
                                             "settable_per_extruder": true,
                                             "settable_per_meshgroup": true
@@ -6305,7 +6335,12 @@
                                     "type": "bool",
                                     "default_value": false,
                                     "settable_per_mesh": true,
-                                    "visible": "((z_seam_type === 'back') || (z_seam_type === 'shortest'))"
+                                    "visible": "((z_seam_type === 'back') || (z_seam_type === 'shortest'))",
+                                    "filter": [
+                                        "basic",
+                                        "advanced",
+                                        "surface_quality"
+                                    ]
                                 },
                                 "z_seam_corner": {
                                     "label": "Seam Corner Preference",
